@@ -41,6 +41,7 @@ class GeometryPage extends StatelessWidget {
               AppColours.primary,
               AppColours.background,
             ),
+            SizedBox(height: 40),
           ],
         ),
       ),

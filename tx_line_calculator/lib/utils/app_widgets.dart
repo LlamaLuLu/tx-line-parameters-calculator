@@ -14,7 +14,7 @@ class AppWidgets extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: 15, horizontal: 40), // Adjust spacing
+            vertical: 12, horizontal: 40), // Adjust spacing
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
