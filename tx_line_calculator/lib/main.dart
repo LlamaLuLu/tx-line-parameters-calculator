@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Tx Line Calculator',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'Poppins'),
       home: HomePage(),
       routes: {
         '/home': (context) => HomePage(),
@@ -32,10 +34,5 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// remove next btn from cln & set own bottom right alignment padding
 // need page to save user input
-// need util for calculations:
-  // Rs calc
-  // R' calc
-  // L' calc
-  // G' calc
-  // C' calc
