@@ -9,6 +9,40 @@ class AppWidgets extends StatelessWidget {
     return const Placeholder();
   }
 
+  static Widget geometryOptBtn(BuildContext context, String route, String label,
+      Color foregroundColor, Color backgroundColor) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            vertical: 15, horizontal: 40), // Adjust spacing
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(
+                  context, route); // Navigate to parallel plate page
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: backgroundColor, // Background color
+              foregroundColor: foregroundColor, // Text color
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(12), // Smooth rounded corners
+              ),
+              elevation: 4,
+              padding: const EdgeInsets.symmetric(vertical: 20), // Same height
+            ),
+            child: Text(label),
+          ),
+        ),
+      ),
+    );
+  }
+
   static Widget materialsTitle(BuildContext context, String heading) {
     return Column(children: [
       // back button
@@ -132,7 +166,7 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
-  static Widget geometryTitle(BuildContext context) {
+  static Widget geometryTitle(BuildContext context, String heading) {
     return Column(children: [
       // back button
       AppWidgets.backBtn(context),
@@ -140,14 +174,14 @@ class AppWidgets extends StatelessWidget {
       const SizedBox(height: 30),
 
       // title: choose your materials:
-      Text('Choose your geometry:',
+      Text(heading,
           textAlign: TextAlign.center,
           style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               color: AppColours.backgroundOpp)),
 
-      SizedBox(height: 30),
+      SizedBox(height: 20),
     ]);
   }
 
