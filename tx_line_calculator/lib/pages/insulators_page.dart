@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class GeometryPage extends StatelessWidget {
-  const GeometryPage({super.key});
+class InsulatorsPage extends StatelessWidget {
+  const InsulatorsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
