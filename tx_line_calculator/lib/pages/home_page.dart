@@ -10,12 +10,13 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [],
-          // title: Tx Line Parameters
+          children: [
+            // title: Tx Line Parameters
 
-          // circuit diagram image
+            // circuit diagram image
 
-          // start button
+            // start button
+          ],
         ),
       ),
     );
