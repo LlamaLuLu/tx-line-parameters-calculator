@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
               children: [
                 // title: Tx Line Parameters
                 Padding(
-                  padding: const EdgeInsets.only(top: 60),
+                  padding: const EdgeInsets.only(top: 70),
                   child: Text('Tx Line\nParameters',
                       textAlign: TextAlign.center,
                       style: const TextStyle(

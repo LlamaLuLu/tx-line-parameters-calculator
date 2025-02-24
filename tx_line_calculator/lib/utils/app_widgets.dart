@@ -132,6 +132,25 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
+  static Widget geometryTitle(BuildContext context) {
+    return Column(children: [
+      // back button
+      AppWidgets.backBtn(context),
+
+      const SizedBox(height: 30),
+
+      // title: choose your materials:
+      Text('Choose your geometry:',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: AppColours.backgroundOpp)),
+
+      SizedBox(height: 30),
+    ]);
+  }
+
   static Widget startBtn(BuildContext context) {
     return Align(
       alignment: Alignment.bottomCenter,

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tx_line_calculator/pages/2_wire_page.dart';
+import 'package:tx_line_calculator/pages/coaxial_page.dart';
 import 'package:tx_line_calculator/pages/conductors_page.dart';
 import 'package:tx_line_calculator/pages/frequency_page.dart';
-import 'package:tx_line_calculator/pages/geometry_input_page.dart';
 import 'package:tx_line_calculator/pages/geometry_page.dart';
 import 'package:tx_line_calculator/pages/home_page.dart';
 import 'package:tx_line_calculator/pages/insulators_page.dart';
+import 'package:tx_line_calculator/pages/parallel_plate.dart';
 import 'package:tx_line_calculator/pages/results_page.dart';
 
 void main() {
@@ -27,7 +29,9 @@ class MyApp extends StatelessWidget {
         '/insulators': (context) => InsulatorsPage(),
         '/frequency': (context) => FrequencyPage(),
         '/geometry_opt': (context) => GeometryPage(),
-        '/geometry_in': (context) => GeometryInputPage(),
+        '/coaxial': (context) => CoaxialPage(),
+        '/2_wire': (context) => TwoWirePage(),
+        '/parallel_plate': (context) => ParallelPlate(),
         '/results': (context) => ResultsPage(),
       },
     );
@@ -36,3 +40,4 @@ class MyApp extends StatelessWidget {
 
 // remove next btn from cln & set own bottom right alignment padding
 // need page to save user input
+// remove back btn? (if it gets complex)

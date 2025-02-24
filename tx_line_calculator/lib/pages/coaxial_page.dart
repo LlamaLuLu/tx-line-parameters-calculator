@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class GeometryInputPage extends StatelessWidget {
-  const GeometryInputPage({super.key});
+class CoaxialPage extends StatelessWidget {
+  const CoaxialPage({super.key});
 
   @override
   Widget build(BuildContext context) {
