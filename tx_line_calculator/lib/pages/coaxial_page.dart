@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
+import 'package:tx_line_calculator/utils/input_fields.dart';
 
 class CoaxialPage extends StatelessWidget {
   const CoaxialPage({super.key});
@@ -10,13 +11,50 @@ class CoaxialPage extends StatelessWidget {
     return Scaffold(
         backgroundColor: AppColours.background,
         body: SafeArea(
-            child: Center(
-          child: Column(
-            children: [
-              // title
-              AppWidgets.geometryTitle(context, 'Coaxial'),
-            ],
-          ),
+            child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        // title
+                        AppWidgets.anyTitle(context, 'Coaxial'),
+
+                        SizedBox(height: 30),
+
+                        // divider
+                        AppWidgets.headingDivider(),
+
+                        // heading: "Enter Parameters:"
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 35, bottom: 15),
+                            child: Text("Enter Parameters:",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColours.darkAccent)),
+                          ),
+                        ),
+
+                        // 2 text fields: a, b
+                        InputFields.textField(false, 'a'),
+                        InputFields.textField(false, 'b'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // evaluate btn
+            AppWidgets.evaluateBtn(context, 1),
+          ],
         )));
   }
 }

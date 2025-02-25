@@ -10,39 +10,42 @@ class GeometryPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColours.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            // title
-            AppWidgets.geometryTitle(context, 'Choose your geometry:'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              // title
+              AppWidgets.anyTitle(context, 'Choose your geometry:'),
 
-            // 3 options: 1. coaxial, 2. 2-wire, 3. parallel plate
-            AppWidgets.geometryOptBtn(
-              context,
-              '/coaxial',
-              'Coaxial',
-              AppColours.accent,
-              AppColours.accentOpp,
-            ),
+              // 3 options: 1. coaxial, 2. 2-wire, 3. parallel plate
+              AppWidgets.geometryOptBtn(
+                context,
+                '/coaxial',
+                'Coaxial',
+                AppColours.darkAccentOpp,
+                AppColours.darkAccent,
+              ),
 
-            // Button 2: 2-wire
-            AppWidgets.geometryOptBtn(
-              context,
-              '/2_wire',
-              'Two-Wire',
-              AppColours.secondary,
-              AppColours.secondaryOpp,
-            ),
+              // Button 2: 2-wire
+              AppWidgets.geometryOptBtn(
+                context,
+                '/2_wire',
+                'Two-Wire',
+                AppColours.primaryOpp,
+                AppColours.primary,
+              ),
 
-            // Button 3: Parallel Plate
-            AppWidgets.geometryOptBtn(
-              context,
-              '/parallel_plate',
-              'Parallel Plate',
-              AppColours.primary,
-              AppColours.background,
-            ),
-            SizedBox(height: 40),
-          ],
+              // Button 3: Parallel Plate
+              AppWidgets.geometryOptBtn(
+                context,
+                '/parallel_plate',
+                'Parallel Plate',
+                AppColours.primary,
+                AppColours.secondary,
+              ),
+              SizedBox(height: 50),
+            ],
+          ),
         ),
       ),
     );

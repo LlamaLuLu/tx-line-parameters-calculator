@@ -4,6 +4,7 @@ import 'package:tx_line_calculator/pages/coaxial_page.dart';
 import 'package:tx_line_calculator/pages/conductors_page.dart';
 import 'package:tx_line_calculator/pages/frequency_page.dart';
 import 'package:tx_line_calculator/pages/geometry_page.dart';
+import 'package:tx_line_calculator/pages/history_page.dart';
 import 'package:tx_line_calculator/pages/home_page.dart';
 import 'package:tx_line_calculator/pages/insulators_page.dart';
 import 'package:tx_line_calculator/pages/parallel_plate.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/2_wire': (context) => TwoWirePage(),
         '/parallel_plate': (context) => ParallelPlate(),
         '/results': (context) => ResultsPage(),
+        '/history': (context) => HistoryPage(),
       },
     );
   }

@@ -9,12 +9,80 @@ class AppWidgets extends StatelessWidget {
     return const Placeholder();
   }
 
+  // BUTTONS:
+
+  static Widget evaluateBtn(BuildContext context, int geometry) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: ElevatedButton(
+          onPressed: () {
+            // do relevant calculations
+            // save results
+
+            Navigator.pushNamed(context, '/results');
+          },
+          child: Text('Evaluate'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Background color
+            padding: const EdgeInsets.symmetric(
+                horizontal: 32, vertical: 16), // Padding
+            foregroundColor: AppColours
+                .background, // Text color (use foregroundColor for text color)
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4,
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget regenBtn(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: ElevatedButton(
+          onPressed: () {
+            // do relevant calculations
+            // save results
+
+            Navigator.pushNamed(context, '/conductors');
+          },
+          child: Text('Regenerate'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Background color
+            padding: const EdgeInsets.symmetric(
+                horizontal: 30, vertical: 16), // Padding
+            foregroundColor: AppColours
+                .background, // Text color (use foregroundColor for text color)
+            textStyle: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4,
+          ),
+        ),
+      ),
+    );
+  }
+
   static Widget geometryOptBtn(BuildContext context, String route, String label,
       Color foregroundColor, Color backgroundColor) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: 12, horizontal: 40), // Adjust spacing
+            vertical: 15, horizontal: 40), // Adjust spacing
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -41,41 +109,6 @@ class AppWidgets extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  static Widget materialsTitle(BuildContext context, String heading) {
-    return Column(children: [
-      // back button
-      AppWidgets.backBtn(context),
-
-      const SizedBox(height: 30),
-
-      // title: choose your materials:
-      Text('Choose your materials:',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: AppColours.backgroundOpp)),
-
-      SizedBox(height: 30),
-
-      // heading: conductor/insulator/frequency
-      Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 35),
-          child: Text(heading,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColours.darkAccent)),
-        ),
-      ),
-
-      const SizedBox(height: 15),
-    ]);
   }
 
   static Widget backBtn(BuildContext context) {
@@ -133,6 +166,106 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
+  static Widget startBtn(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/conductors');
+          },
+          child: Text('Start'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Background color
+            padding: const EdgeInsets.symmetric(
+                horizontal: 36, vertical: 18), // Padding
+            foregroundColor: AppColours
+                .background, // Text color (use foregroundColor for text color)
+            textStyle: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // TITLE HEADINGS:
+
+  static Widget materialsTitle(BuildContext context, String heading) {
+    return Column(children: [
+      // back button
+      AppWidgets.backBtn(context),
+
+      const SizedBox(height: 30),
+
+      // title: choose your materials:
+      Text('Choose your materials:',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: AppColours.backgroundOpp)),
+
+      SizedBox(height: 30),
+
+      // heading: conductor/insulator/frequency
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: Text(heading,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColours.darkAccent)),
+        ),
+      ),
+
+      const SizedBox(height: 15),
+    ]);
+  }
+
+  static Widget anyTitle(BuildContext context, String heading) {
+    return Column(children: [
+      // back button
+      AppWidgets.backBtn(context),
+
+      const SizedBox(height: 30),
+
+      // title: choose your materials:
+      Text(heading,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: AppColours.backgroundOpp)),
+
+      SizedBox(height: 20),
+    ]);
+  }
+
+  // WIDGET COMPONENTS:
+
+  static Widget headingDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+      child: Expanded(
+        child: Divider(
+          color: AppColours.darkAccent, // Line color
+          thickness: 1, // Line thickness
+        ),
+      ),
+    );
+  }
+
   static Widget orDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -162,55 +295,6 @@ class AppWidgets extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  static Widget geometryTitle(BuildContext context, String heading) {
-    return Column(children: [
-      // back button
-      AppWidgets.backBtn(context),
-
-      const SizedBox(height: 30),
-
-      // title: choose your materials:
-      Text(heading,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: AppColours.backgroundOpp)),
-
-      SizedBox(height: 20),
-    ]);
-  }
-
-  static Widget startBtn(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/conductors');
-          },
-          child: Text('Start'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColours.primary, // Background color
-            padding: const EdgeInsets.symmetric(
-                horizontal: 36, vertical: 18), // Padding
-            foregroundColor: AppColours
-                .background, // Text color (use foregroundColor for text color)
-            textStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
-            ),
-            elevation: 4,
-          ),
-        ),
       ),
     );
   }
