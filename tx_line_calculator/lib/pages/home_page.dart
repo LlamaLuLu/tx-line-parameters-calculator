@@ -10,31 +10,37 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColours.background,
       body: SafeArea(
-        child: Stack(children: [
-          Center(
-            child: Column(
-              children: [
-                // title: Tx Line Parameters
-                Padding(
-                  padding: const EdgeInsets.only(top: 70),
-                  child: Text('Tx Line\nParameters',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: AppColours.backgroundOpp)),
-                ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Stack(children: [
+            // history btn
+            AppWidgets.historyBtn(context),
 
-                // circuit diagram image
+            Center(
+              child: Column(
+                children: [
+                  // title: Tx Line Parameters
+                  Padding(
+                    padding: const EdgeInsets.only(top: 90),
+                    child: Text('Tx Line\nParameters',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: AppColours.backgroundOpp)),
+                  ),
 
-                // additional: history button
-              ],
+                  // circuit diagram image
+
+                  // additional: history button
+                ],
+              ),
             ),
-          ),
 
-          // start button
-          AppWidgets.startBtn(context),
-        ]),
+            // start button
+            AppWidgets.startBtn(context),
+          ]),
+        ),
       ),
     );
   }

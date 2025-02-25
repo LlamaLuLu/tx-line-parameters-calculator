@@ -19,7 +19,7 @@ class ResultsPage extends StatelessWidget {
                   child: Column(
                     children: [
                       //title
-                      AppWidgets.anyTitle(context, 'Results'),
+                      AppWidgets.withHistoryTitle(context, 'Results'),
 
                       // scrolling wheel of circuit diagram & 3d model of geometry
                       SizedBox(height: 120),
@@ -47,42 +47,11 @@ class ResultsPage extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 // row: history btn, regenerate btn
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // round btn with history icon at btm left
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 80),
-                          child: FloatingActionButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/history');
-                            },
-                            backgroundColor: AppColours
-                                .secondary, // Change to fit your theme
-                            elevation: 4,
-                            shape: const CircleBorder(),
-                            child: Icon(
-                              Icons.history,
-                              color:
-                                  AppColours.ivory, // Change to fit your theme
-                              size: 28,
-                            ),
-                          ),
-                        ),
-                      ),
 
-                      // regenerate btn at btm center
-                      AppWidgets.regenBtn(context),
-
-                      SizedBox(width: 50),
-                    ],
-                  ),
-                )
+                // regenerate btn at btm center
+                AppWidgets.regenBtn(context),
               ],
             ),
           ),

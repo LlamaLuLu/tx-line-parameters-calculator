@@ -126,6 +126,32 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
+  static Widget historyBtn(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20, right: 12),
+        child: SizedBox(
+          width: 45,
+          height: 45,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/history');
+            },
+            backgroundColor: AppColours.secondary, // Change to fit your theme
+            elevation: 4,
+            shape: const CircleBorder(),
+            child: Icon(
+              Icons.history,
+              color: AppColours.ivory, // Change to fit your theme
+              size: 26,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   static Widget nextBtn(BuildContext context, String route) {
     return Align(
       alignment: Alignment.bottomRight,
@@ -237,6 +263,34 @@ class AppWidgets extends StatelessWidget {
     return Column(children: [
       // back button
       AppWidgets.backBtn(context),
+
+      const SizedBox(height: 30),
+
+      // title: choose your materials:
+      Text(heading,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: AppColours.backgroundOpp)),
+
+      SizedBox(height: 20),
+    ]);
+  }
+
+  static Widget withHistoryTitle(BuildContext context, String heading) {
+    return Column(children: [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // back btn
+          AppWidgets.backBtn(context),
+
+          // history btn
+          AppWidgets.historyBtn(context),
+        ],
+      ),
 
       const SizedBox(height: 30),
 
