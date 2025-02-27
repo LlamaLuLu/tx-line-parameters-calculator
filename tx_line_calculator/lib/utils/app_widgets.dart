@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
+import 'package:tx_line_calculator/utils/calculations.dart';
+import 'package:tx_line_calculator/utils/user_input_data.dart';
 
 class AppWidgets extends StatelessWidget {
   const AppWidgets({super.key});
@@ -11,19 +13,32 @@ class AppWidgets extends StatelessWidget {
 
   // BUTTONS:
 
-  static Widget evaluateBtn(BuildContext context, int geometry) {
+  static Widget evaluateBtn(
+      BuildContext context, int geometry, double param1, double param2) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 80),
         child: ElevatedButton(
           onPressed: () {
-            // do relevant calculations
-            // save results
+            // depends on geometry:
+
+            if (geometry == 1) {
+              // coaxial
+              Calculations.evalCoaxial(1, param1, param2);
+              // load coaxial results
+            } else if (geometry == 2) {
+              // 2-wire
+              Calculations.eval2Wire(2, param1, param2);
+              // load 2-wire results
+            } else if (geometry == 3) {
+              // parallel plate
+              Calculations.evalParallelPlate(3, param1, param2);
+              // load parallel plate results
+            }
 
             Navigator.pushNamed(context, '/results');
           },
-          child: Text('Evaluate'),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColours.primary, // Background color
             padding: const EdgeInsets.symmetric(
@@ -39,6 +54,7 @@ class AppWidgets extends StatelessWidget {
             ),
             elevation: 4,
           ),
+          child: Text('Evaluate'),
         ),
       ),
     );
@@ -165,6 +181,130 @@ class AppWidgets extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColours.primary, // Use your theme color
             foregroundColor: AppColours.background, // White text for contrast
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4, // Slight shadow for depth
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Next'), // Button text
+              SizedBox(width: 8), // Space between text and icon
+              Icon(
+                Icons.arrow_forward,
+                size: 22,
+                color: AppColours.background,
+              ), // Arrow icon
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget nextBtnConductor(
+      BuildContext context, String route, double muC, double sigmaC) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
+        child: ElevatedButton(
+          onPressed: () async {
+            await UserInputData.saveConductorData(muC, sigmaC);
+            Navigator.pushNamed(
+                context, route); // Replace with your actual route
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Use your theme color
+            foregroundColor: AppColours.background, // White text for contrast
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4, // Slight shadow for depth
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Next'), // Button text
+              SizedBox(width: 8), // Space between text and icon
+              Icon(
+                Icons.arrow_forward,
+                size: 22,
+                color: AppColours.background,
+              ), // Arrow icon
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget nextBtnInsulator(BuildContext context, String route, double muR,
+      double epsilonR, double sigma) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
+        child: ElevatedButton(
+          onPressed: () async {
+            await UserInputData.saveInsulatorData(muR, epsilonR, sigma);
+            Navigator.pushNamed(
+                context, route); // Replace with your actual route
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Use your theme color
+            foregroundColor: AppColours.background, // White text for contrast
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4, // Slight shadow for depth
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Next'), // Button text
+              SizedBox(width: 8), // Space between text and icon
+              Icon(
+                Icons.arrow_forward,
+                size: 22,
+                color: AppColours.background,
+              ), // Arrow icon
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget nextBtnFrequency(BuildContext context, String route, double f) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 55, right: 45),
+        child: ElevatedButton(
+          onPressed: () async {
+            await UserInputData.saveF(f);
+            Navigator.pushNamed(context, route);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary,
+            foregroundColor: AppColours.background,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
             textStyle: const TextStyle(
               fontSize: 18,

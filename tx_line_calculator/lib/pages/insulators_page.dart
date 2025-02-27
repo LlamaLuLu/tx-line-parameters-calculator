@@ -3,8 +3,17 @@ import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
 import 'package:tx_line_calculator/utils/input_fields.dart';
 
-class InsulatorsPage extends StatelessWidget {
+class InsulatorsPage extends StatefulWidget {
   const InsulatorsPage({super.key});
+
+  @override
+  State<InsulatorsPage> createState() => _InsulatorsPageState();
+}
+
+class _InsulatorsPageState extends State<InsulatorsPage> {
+  final TextEditingController muRController = TextEditingController();
+  final TextEditingController epsilonRController = TextEditingController();
+  final TextEditingController sigmaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -103,12 +112,23 @@ class InsulatorsPage extends StatelessWidget {
 
                         const SizedBox(height: 15),
 
-                        // µ & text field
-                        InputFields.textField(false, 'µ'),
-                        // epsilon & text field
-                        InputFields.textField(false, 'ε'),
+                        // µR & text field
+                        InputFields.textField(
+                            hasSubscript: true,
+                            label: 'µ',
+                            controller: muRController,
+                            subscript: 'r'),
+                        // epsilonR & text field
+                        InputFields.textField(
+                            hasSubscript: true,
+                            label: 'ε',
+                            controller: epsilonRController,
+                            subscript: 'r'),
                         // sigma & text field
-                        InputFields.textField(false, 'σ'),
+                        InputFields.textField(
+                          label: 'σ',
+                          controller: sigmaController,
+                        ),
                       ],
                     ),
                   ),
@@ -119,7 +139,13 @@ class InsulatorsPage extends StatelessWidget {
         ),
 
         // next button
-        AppWidgets.nextBtn(context, '/frequency'),
+        AppWidgets.nextBtnInsulator(
+          context,
+          '/frequency',
+          double.tryParse(muRController.text.trim()) ?? 0.0,
+          double.tryParse(epsilonRController.text.trim()) ?? 0.0,
+          double.tryParse(sigmaController.text.trim()) ?? 0.0,
+        )
       ])),
     );
   }

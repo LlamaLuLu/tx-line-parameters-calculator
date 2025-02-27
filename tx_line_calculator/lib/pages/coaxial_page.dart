@@ -3,8 +3,16 @@ import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
 import 'package:tx_line_calculator/utils/input_fields.dart';
 
-class CoaxialPage extends StatelessWidget {
+class CoaxialPage extends StatefulWidget {
   const CoaxialPage({super.key});
+
+  @override
+  State<CoaxialPage> createState() => _CoaxialPageState();
+}
+
+class _CoaxialPageState extends State<CoaxialPage> {
+  final TextEditingController aController = TextEditingController();
+  final TextEditingController bController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +52,10 @@ class CoaxialPage extends StatelessWidget {
                         ),
 
                         // 2 text fields: a, b
-                        InputFields.textField(false, 'a'),
-                        InputFields.textField(false, 'b'),
+                        InputFields.textField(
+                            label: 'a', controller: aController),
+                        InputFields.textField(
+                            label: 'b', controller: bController),
                       ],
                     ),
                   ),
@@ -53,7 +63,12 @@ class CoaxialPage extends StatelessWidget {
               ),
             ),
             // evaluate btn
-            AppWidgets.evaluateBtn(context, 1),
+            AppWidgets.evaluateBtn(
+              context,
+              1,
+              double.tryParse(aController.text.trim()) ?? 0.0,
+              double.tryParse(bController.text.trim()) ?? 0.0,
+            ),
           ],
         )));
   }

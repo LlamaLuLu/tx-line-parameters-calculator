@@ -9,7 +9,11 @@ class InputFields extends StatelessWidget {
     return const Placeholder();
   }
 
-  static Widget textField(bool hasSubscript, String label) {
+  static Widget textField(
+      {bool hasSubscript = false,
+      required String label,
+      required TextEditingController controller,
+      String? subscript}) {
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: 30, vertical: 10), // More balanced padding
@@ -17,7 +21,7 @@ class InputFields extends StatelessWidget {
         crossAxisAlignment:
             CrossAxisAlignment.center, // Aligns text & input properly
         children: [
-          // µ_c Label with proper Unicode symbol
+          // µ_c label
           RichText(
             text: TextSpan(
               style: TextStyle(
@@ -32,7 +36,7 @@ class InputFields extends StatelessWidget {
                     child: Transform.translate(
                       offset: Offset(0, 4), // Moves subscript down
                       child: Text(
-                        'c',
+                        subscript!,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600, // Match boldness
@@ -50,6 +54,7 @@ class InputFields extends StatelessWidget {
           // Text Field
           Expanded(
             child: TextField(
+              controller: controller,
               decoration: InputDecoration(
                 hintText: 'Enter value',
                 hintStyle: const TextStyle(

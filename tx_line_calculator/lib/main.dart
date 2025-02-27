@@ -39,7 +39,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// remove next btn from cln & set own bottom right alignment padding
-// need page to save user input
-// remove back btn? (if it gets complex)

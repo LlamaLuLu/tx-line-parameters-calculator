@@ -3,8 +3,16 @@ import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
 import 'package:tx_line_calculator/utils/input_fields.dart';
 
-class TwoWirePage extends StatelessWidget {
+class TwoWirePage extends StatefulWidget {
   const TwoWirePage({super.key});
+
+  @override
+  State<TwoWirePage> createState() => _TwoWirePageState();
+}
+
+class _TwoWirePageState extends State<TwoWirePage> {
+  final TextEditingController DController = TextEditingController();
+  final TextEditingController dController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +52,10 @@ class TwoWirePage extends StatelessWidget {
                         ),
 
                         // 2 text fields: a, b
-                        InputFields.textField(false, 'D'),
-                        InputFields.textField(false, 'd'),
+                        InputFields.textField(
+                            label: 'D', controller: DController),
+                        InputFields.textField(
+                            label: 'd', controller: dController),
                       ],
                     ),
                   ),
@@ -53,7 +63,12 @@ class TwoWirePage extends StatelessWidget {
               ),
             ),
             // evaluate btn
-            AppWidgets.evaluateBtn(context, 2),
+            AppWidgets.evaluateBtn(
+              context,
+              2,
+              double.tryParse(DController.text.trim()) ?? 0.0,
+              double.tryParse(dController.text.trim()) ?? 0.0,
+            ),
           ],
         )));
   }

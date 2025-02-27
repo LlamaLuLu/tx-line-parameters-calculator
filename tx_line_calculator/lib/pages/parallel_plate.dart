@@ -3,15 +3,23 @@ import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
 import 'package:tx_line_calculator/utils/input_fields.dart';
 
-class ParallelPlate extends StatelessWidget {
+class ParallelPlate extends StatefulWidget {
   const ParallelPlate({super.key});
+
+  @override
+  State<ParallelPlate> createState() => _ParallelPlateState();
+}
+
+class _ParallelPlateState extends State<ParallelPlate> {
+  final TextEditingController wController = TextEditingController();
+  final TextEditingController hController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColours.background,
-        body: SafeArea(
-            child: Column(
+      backgroundColor: AppColours.background,
+      body: SafeArea(
+        child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
@@ -44,8 +52,10 @@ class ParallelPlate extends StatelessWidget {
                         ),
 
                         // 2 text fields: a, b
-                        InputFields.textField(false, 'w'),
-                        InputFields.textField(false, 'h'),
+                        InputFields.textField(
+                            label: 'w', controller: wController),
+                        InputFields.textField(
+                            label: 'h', controller: hController),
                       ],
                     ),
                   ),
@@ -53,8 +63,15 @@ class ParallelPlate extends StatelessWidget {
               ),
             ),
             // evaluate btn
-            AppWidgets.evaluateBtn(context, 3),
+            AppWidgets.evaluateBtn(
+              context,
+              3,
+              double.tryParse(wController.text.trim()) ?? 0.0,
+              double.tryParse(hController.text.trim()) ?? 0.0,
+            ),
           ],
-        )));
+        ),
+      ),
+    );
   }
 }
