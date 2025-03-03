@@ -14,12 +14,18 @@ class Calculations {
     await UserInputData.saveSelectedGeometry(geometry);
     await UserInputData.saveCoaxialData(a, b);
 
-    double muC = (await UserInputData.getMuC()) ?? 0.0;
-    double sigmaC = (await UserInputData.getSigmaC()) ?? 0.0;
-    double f = (await UserInputData.getF()) ?? 0.0;
-    double muR = (await UserInputData.getMuR()) ?? 0.0;
-    double sigma = (await UserInputData.getSigma()) ?? 0.0;
-    double epsilonR = (await UserInputData.getEpsilonR()) ?? 0.0;
+    double muC = (await UserInputData.getMuC()) ??
+        (4 * pi * 1e-7); // Permeability of free space
+    double sigmaC =
+        (await UserInputData.getSigmaC()) ?? 5.8e7; // Conductivity of copper
+    double f =
+        (await UserInputData.getF()) ?? 60.0; // Default frequency (60 Hz)
+    double muR =
+        (await UserInputData.getMuR()) ?? 1.0; // Relative permeability (vacuum)
+    double sigma = (await UserInputData.getSigma()) ??
+        5.8e-5; // Conductivity for air or default material
+    double epsilonR = (await UserInputData.getEpsilonR()) ??
+        1.0; // Relative permittivity (vacuum)
 
     double rS = calcRs(muC, sigmaC, f);
     double r = calcRCoaxial(rS, a, b);
@@ -35,12 +41,18 @@ class Calculations {
     await UserInputData.saveSelectedGeometry(geometry);
     await UserInputData.save2WireData(D, d);
 
-    double muC = (await UserInputData.getMuC()) ?? 0.0;
-    double sigmaC = (await UserInputData.getSigmaC()) ?? 0.0;
-    double f = (await UserInputData.getF()) ?? 0.0;
-    double muR = (await UserInputData.getMuR()) ?? 0.0;
-    double sigma = (await UserInputData.getSigma()) ?? 0.0;
-    double epsilonR = (await UserInputData.getEpsilonR()) ?? 0.0;
+    double muC = (await UserInputData.getMuC()) ??
+        (4 * pi * 1e-7); // Permeability of free space
+    double sigmaC =
+        (await UserInputData.getSigmaC()) ?? 5.8e7; // Conductivity of copper
+    double f =
+        (await UserInputData.getF()) ?? 60.0; // Default frequency (60 Hz)
+    double muR =
+        (await UserInputData.getMuR()) ?? 1.0; // Relative permeability (vacuum)
+    double sigma = (await UserInputData.getSigma()) ??
+        5.8e-5; // Conductivity for air or default material
+    double epsilonR = (await UserInputData.getEpsilonR()) ??
+        1.0; // Relative permittivity (vacuum)
 
     double rS = calcRs(muC, sigmaC, f);
     double r = calcR2Wire(rS, d);
@@ -57,12 +69,18 @@ class Calculations {
     await UserInputData.saveSelectedGeometry(geometry);
     await UserInputData.saveParallelPlateData(w, h);
 
-    double muC = (await UserInputData.getMuC()) ?? 0.0;
-    double sigmaC = (await UserInputData.getSigmaC()) ?? 0.0;
-    double f = (await UserInputData.getF()) ?? 0.0;
-    double muR = (await UserInputData.getMuR()) ?? 0.0;
-    double sigma = (await UserInputData.getSigma()) ?? 0.0;
-    double epsilonR = (await UserInputData.getEpsilonR()) ?? 0.0;
+    double muC = (await UserInputData.getMuC()) ??
+        (4 * pi * 1e-7); // Permeability of free space
+    double sigmaC =
+        (await UserInputData.getSigmaC()) ?? 5.8e7; // Conductivity of copper
+    double f =
+        (await UserInputData.getF()) ?? 60.0; // Default frequency (60 Hz)
+    double muR =
+        (await UserInputData.getMuR()) ?? 1.0; // Relative permeability (vacuum)
+    double sigma = (await UserInputData.getSigma()) ??
+        5.8e-5; // Conductivity for air or default material
+    double epsilonR = (await UserInputData.getEpsilonR()) ??
+        1.0; // Relative permittivity (vacuum)
 
     double rS = calcRs(muC, sigmaC, f);
     double r = calcRParallel(rS, w);

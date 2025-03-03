@@ -13,7 +13,8 @@ class InputFields extends StatelessWidget {
       {bool hasSubscript = false,
       required String label,
       required TextEditingController controller,
-      String? subscript}) {
+      String? subscript,
+      String? hintText}) {
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: 30, vertical: 10), // More balanced padding
@@ -21,7 +22,7 @@ class InputFields extends StatelessWidget {
         crossAxisAlignment:
             CrossAxisAlignment.center, // Aligns text & input properly
         children: [
-          // µ_c label
+          // label
           RichText(
             text: TextSpan(
               style: TextStyle(
@@ -30,18 +31,18 @@ class InputFields extends StatelessWidget {
                 color: AppColours.darkAccent,
               ),
               children: [
-                TextSpan(text: label), // Proper micro symbol
+                TextSpan(text: label),
                 if (hasSubscript)
                   WidgetSpan(
                     child: Transform.translate(
-                      offset: Offset(0, 4), // Moves subscript down
+                      offset: Offset(0, 4), // move subscript down
                       child: Text(
                         subscript!,
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w600, // Match boldness
-                          color: AppColours.darkAccent, // Match color
-                        ), // Subscript c
+                          fontWeight: FontWeight.w600,
+                          color: AppColours.darkAccent,
+                        ),
                       ),
                     ),
                   ),
@@ -56,7 +57,9 @@ class InputFields extends StatelessWidget {
             child: TextField(
               controller: controller,
               decoration: InputDecoration(
-                hintText: 'Enter value',
+                hintText: (hintText == null || hintText.isEmpty)
+                    ? 'Enter value'
+                    : hintText,
                 hintStyle: const TextStyle(
                   fontSize: 14,
                   color: AppColours.darkAccent,

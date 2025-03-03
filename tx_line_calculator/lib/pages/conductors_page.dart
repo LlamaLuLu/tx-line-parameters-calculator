@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
 import 'package:tx_line_calculator/utils/input_fields.dart';
-import 'package:tx_line_calculator/utils/user_inputs.dart';
 
 class ConductorsPage extends StatefulWidget {
   const ConductorsPage({super.key});
@@ -136,10 +135,11 @@ class _ConductorsPageState extends State<ConductorsPage> {
 
             // next button
             AppWidgets.nextBtnConductor(
-                context,
-                '/insulators',
-                double.tryParse(muCController.text.trim()) ?? 0.0,
-                double.tryParse(sigmaCController.text.trim()) ?? 0.0),
+              context,
+              '/insulators',
+              muCController,
+              sigmaCController,
+            ),
           ],
         ),
       ),

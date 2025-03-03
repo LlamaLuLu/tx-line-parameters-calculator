@@ -66,8 +66,8 @@ class _TwoWirePageState extends State<TwoWirePage> {
             AppWidgets.evaluateBtn(
               context,
               2,
-              double.tryParse(DController.text.trim()) ?? 0.0,
-              double.tryParse(dController.text.trim()) ?? 0.0,
+              DController,
+              dController,
             ),
           ],
         )));

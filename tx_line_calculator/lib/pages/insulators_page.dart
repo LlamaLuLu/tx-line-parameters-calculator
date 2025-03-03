@@ -142,9 +142,9 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
         AppWidgets.nextBtnInsulator(
           context,
           '/frequency',
-          double.tryParse(muRController.text.trim()) ?? 0.0,
-          double.tryParse(epsilonRController.text.trim()) ?? 0.0,
-          double.tryParse(sigmaController.text.trim()) ?? 0.0,
+          muRController,
+          epsilonRController,
+          sigmaController,
         )
       ])),
     );

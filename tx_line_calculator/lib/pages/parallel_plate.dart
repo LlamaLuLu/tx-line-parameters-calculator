@@ -66,8 +66,8 @@ class _ParallelPlateState extends State<ParallelPlate> {
             AppWidgets.evaluateBtn(
               context,
               3,
-              double.tryParse(wController.text.trim()) ?? 0.0,
-              double.tryParse(hController.text.trim()) ?? 0.0,
+              wController,
+              hController,
             ),
           ],
         ),

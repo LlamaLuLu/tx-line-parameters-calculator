@@ -11,10 +11,44 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
+  double? rS, r, l, g, c;
+  int? geometryCode;
+  String? geometry;
+
   @override
   void initState() {
     super.initState();
-    // This forces a refresh when this screen is initialized
+    loadResults();
+  }
+
+  Future<void> loadResults() async {
+    // Fetch results from UserInputData
+    geometryCode = await UserInputData.getSelectedGeometry();
+    if (geometryCode == 1) {
+      geometry = 'Coaxial';
+    } else if (geometryCode == 2) {
+      geometry = '2-Wire';
+    } else if (geometryCode == 3) {
+      geometry = 'Parallel Plate';
+    }
+
+    rS = await UserInputData.getRS();
+    if (geometryCode == 1) {
+      r = await UserInputData.getRCoaxial();
+      l = await UserInputData.getLCoaxial();
+      g = await UserInputData.getGCoaxial();
+      c = await UserInputData.getCCoaxial();
+    } else if (geometryCode == 2) {
+      r = await UserInputData.getR2Wire();
+      l = await UserInputData.getL2Wire();
+      g = await UserInputData.getG2Wire();
+      c = await UserInputData.getC2Wire();
+    } else if (geometryCode == 3) {
+      r = await UserInputData.getRParallel();
+      l = await UserInputData.getLParallel();
+      g = await UserInputData.getGParallel();
+      c = await UserInputData.getCParallel();
+    }
     setState(() {});
   }
 
@@ -34,143 +68,88 @@ class _ResultsPageState extends State<ResultsPage> {
                       AppWidgets.withHistoryTitle(context, 'Results'),
 
                       // scrolling wheel of circuit diagram & 3d model of geometry
-                      SizedBox(height: 100),
+                      SizedBox(height: 80),
 
                       // table of calculated parameters
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Table(
-                          border: TableBorder.all(color: Colors.black),
-                          columnWidths: {
-                            0: FlexColumnWidth(1),
-                            1: FlexColumnWidth(2),
-                          },
-                          children: [
-                            TableRow(
-                              decoration:
-                                  BoxDecoration(color: Colors.grey[300]),
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("R_S",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: FutureBuilder<double?>(
-                                    future: UserInputData.getRS(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return CircularProgressIndicator();
-                                      } else if (snapshot.hasError) {
-                                        return Text('Error');
-                                      } else {
-                                        return Text(
-                                            snapshot.data?.toStringAsFixed(6) ??
-                                                'N/A');
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            TableRow(children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("R'")),
+                      Text('You chose geometry: $geometry'),
+                      Table(
+                        border: TableBorder.all(color: Colors.black),
+                        columnWidths: {
+                          0: FixedColumnWidth(120),
+                          1: FixedColumnWidth(100),
+                        },
+                        children: [
+                          TableRow(
+                            children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: FutureBuilder<double?>(
-                                  future: UserInputData.getR(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error');
-                                    } else {
-                                      return Text(
-                                          snapshot.data?.toStringAsFixed(6) ??
-                                              'N/A');
-                                    }
-                                  },
-                                ),
+                                child: Text('R_s',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
                               ),
-                            ]),
-                            // Similar pattern for L', G', and C'
-                            TableRow(children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("L'")),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: FutureBuilder<double?>(
-                                  future: UserInputData.getL(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error');
-                                    } else {
-                                      return Text(
-                                          snapshot.data?.toStringAsFixed(6) ??
-                                              'N/A');
-                                    }
-                                  },
-                                ),
+                                child: Text(rS?.toStringAsFixed(3) ?? 'N/A'),
                               ),
-                            ]),
-                            TableRow(children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("G'")),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: FutureBuilder<double?>(
-                                  future: UserInputData.getG(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error');
-                                    } else {
-                                      return Text(
-                                          snapshot.data?.toStringAsFixed(6) ??
-                                              'N/A');
-                                    }
-                                  },
-                                ),
+                                child: Text('R\'',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
                               ),
-                            ]),
-                            TableRow(children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("C'")),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: FutureBuilder<double?>(
-                                  future: UserInputData.getC(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error');
-                                    } else {
-                                      return Text(
-                                          snapshot.data?.toStringAsFixed(6) ??
-                                              'N/A');
-                                    }
-                                  },
-                                ),
+                                child: Text(r?.toStringAsFixed(3) ?? 'N/A'),
                               ),
-                            ]),
-                          ],
-                        ),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('L\'',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(l?.toStringAsFixed(3) ?? 'N/A'),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('G\'',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(g?.toStringAsFixed(3) ?? 'N/A'),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('C\'',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(c?.toStringAsFixed(3) ?? 'N/A'),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
 
                       // divider

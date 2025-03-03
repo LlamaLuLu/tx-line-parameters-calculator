@@ -37,8 +37,7 @@ class _FrequencyPageState extends State<FrequencyPage> {
             ),
 
             //next button
-            AppWidgets.nextBtnFrequency(context, '/geometry_opt',
-                double.tryParse(fController.text.trim()) ?? 0.0),
+            AppWidgets.nextBtnFrequency(context, '/geometry_opt', fController),
           ],
         ),
       ),

@@ -66,8 +66,8 @@ class _CoaxialPageState extends State<CoaxialPage> {
             AppWidgets.evaluateBtn(
               context,
               1,
-              double.tryParse(aController.text.trim()) ?? 0.0,
-              double.tryParse(bController.text.trim()) ?? 0.0,
+              aController,
+              bController,
             ),
           ],
         )));

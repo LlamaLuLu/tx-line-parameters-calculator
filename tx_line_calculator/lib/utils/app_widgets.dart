@@ -14,15 +14,21 @@ class AppWidgets extends StatelessWidget {
   // BUTTONS:
 
   static Widget evaluateBtn(
-      BuildContext context, int geometry, double param1, double param2) {
+      BuildContext context,
+      int geometry,
+      TextEditingController param1Controller,
+      TextEditingController param2Controller) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 80),
         child: ElevatedButton(
           onPressed: () {
+            double param1 =
+                double.tryParse(param1Controller.text.trim()) ?? 0.0;
+            double param2 =
+                double.tryParse(param2Controller.text.trim()) ?? 0.0;
             // depends on geometry:
-
             if (geometry == 1) {
               // coaxial
               Calculations.evalCoaxial(1, param1, param2);
@@ -134,6 +140,7 @@ class AppWidgets extends StatelessWidget {
         padding: const EdgeInsets.only(top: 20), // Adjust padding for spacing
         child: IconButton(
           onPressed: () {
+            FocusScope.of(context).unfocus(); // dismiss keyboard
             Navigator.pop(context);
           },
           icon: Icon(Icons.arrow_back, size: 30, color: AppColours.primary),
@@ -168,55 +175,24 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
-  static Widget nextBtn(BuildContext context, String route) {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(
-                context, route); // Replace with your actual route
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColours.primary, // Use your theme color
-            foregroundColor: AppColours.background, // White text for contrast
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-            textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
-            ),
-            elevation: 4, // Slight shadow for depth
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Next'), // Button text
-              SizedBox(width: 8), // Space between text and icon
-              Icon(
-                Icons.arrow_forward,
-                size: 22,
-                color: AppColours.background,
-              ), // Arrow icon
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   static Widget nextBtnConductor(
-      BuildContext context, String route, double muC, double sigmaC) {
+      BuildContext context,
+      String route,
+      TextEditingController muCController,
+      TextEditingController sigmaCController) {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
         child: ElevatedButton(
           onPressed: () async {
+            // parse values when button is pressed
+            double muC = double.tryParse(muCController.text.trim()) ?? 0.0;
+            double sigmaC =
+                double.tryParse(sigmaCController.text.trim()) ?? 0.0;
+
             await UserInputData.saveConductorData(muC, sigmaC);
+
             Navigator.pushNamed(
                 context, route); // Replace with your actual route
           },
@@ -250,14 +226,24 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
-  static Widget nextBtnInsulator(BuildContext context, String route, double muR,
-      double epsilonR, double sigma) {
+  static Widget nextBtnInsulator(
+      BuildContext context,
+      String route,
+      TextEditingController muRController,
+      TextEditingController epsilonRController,
+      TextEditingController sigmaController) {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
         child: ElevatedButton(
           onPressed: () async {
+            // parse values when button is pressed
+            double muR = double.tryParse(muRController.text.trim()) ?? 0.0;
+            double epsilonR =
+                double.tryParse(epsilonRController.text.trim()) ?? 0.0;
+            double sigma = double.tryParse(sigmaController.text.trim()) ?? 0.0;
+
             await UserInputData.saveInsulatorData(muR, epsilonR, sigma);
             Navigator.pushNamed(
                 context, route); // Replace with your actual route
@@ -292,13 +278,17 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
-  static Widget nextBtnFrequency(BuildContext context, String route, double f) {
+  static Widget nextBtnFrequency(
+      BuildContext context, String route, TextEditingController fController) {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 55, right: 45),
         child: ElevatedButton(
           onPressed: () async {
+            // parse values when button is pressed
+            double f = double.tryParse(fController.text.trim()) ?? 0.0;
+
             await UserInputData.saveF(f);
             Navigator.pushNamed(context, route);
           },
