@@ -71,7 +71,7 @@ class _ResultsPageState extends State<ResultsPage> {
     return Scaffold(
       backgroundColor: AppColours.background,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
             Expanded(
               child: SingleChildScrollView(
@@ -99,29 +99,29 @@ class _ResultsPageState extends State<ResultsPage> {
                                 BoxDecoration(color: AppColours.primary),
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(6),
                                 child: Text('Parameter',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: AppColours.ivory)),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(6),
                                 child: Text('Value',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: AppColours.ivory)),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(6),
                                 child: Text('Unit',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                         color: AppColours.ivory)),
                               ),
@@ -129,7 +129,7 @@ class _ResultsPageState extends State<ResultsPage> {
                           ),
                           // Data Rows
                           _buildTableRow(
-                              'Rₛ', rS?.toStringAsExponential(2), '\u03A9/m'),
+                              'Rs', rS?.toStringAsExponential(2), '\u03A9/m'),
                           _buildTableRow(
                               "R'", r?.toStringAsExponential(2), '\u03A9/m'),
                           _buildTableRow(
@@ -152,6 +152,8 @@ class _ResultsPageState extends State<ResultsPage> {
                         ],
                       ),
 
+                      AppWidgets.dividerTop(),
+
                       // toggle heading: "Your Inputs:"
                       Theme(
                         data: Theme.of(context)
@@ -168,42 +170,57 @@ class _ResultsPageState extends State<ResultsPage> {
                           tilePadding:
                               const EdgeInsets.symmetric(horizontal: 20),
                           childrenPadding: const EdgeInsets.only(
-                              bottom: 30, left: 30, right: 30),
+                              bottom: 30, left: 15, right: 15),
                           expandedAlignment: Alignment.topLeft,
                           expandedCrossAxisAlignment: CrossAxisAlignment.start,
                           onExpansionChanged: (bool expanded) {},
                           controlAffinity: ListTileControlAffinity.leading,
                           children: [
                             Card(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
+                              margin: const EdgeInsets.only(
+                                  left: 12, right: 12, top: 5, bottom: 85),
                               elevation: 3,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(14),
                                 side: BorderSide(
                                     color: AppColours.secondary, width: 1.5),
                               ),
                               color: AppColours.ivory,
                               child: Padding(
-                                padding: const EdgeInsets.all(18),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 18, vertical: 12),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    // conductor
                                     _sectionTitle("Conductor Properties"),
-                                    _buildStyledDataRow("μC", muC, "H/m"),
-                                    _buildStyledDataRow("σC", sigmaC, "S/m"),
+                                    _buildStyledDataRow("μC",
+                                        muC!.toStringAsExponential(2), "H/m"),
+                                    _buildStyledDataRow(
+                                        "σC",
+                                        sigmaC!.toStringAsExponential(2),
+                                        "S/m"),
+                                    // insulator
                                     _sectionTitle("Insulator Properties"),
-                                    _buildStyledDataRow("μR", muR, "H/m"),
-                                    _buildStyledDataRow("εR", epsilonR, "F/m"),
-                                    _buildStyledDataRow("σ", sigma, "S/m"),
+                                    _buildStyledDataRow("μR",
+                                        muR!.toStringAsExponential(2), "H/m"),
+                                    _buildStyledDataRow(
+                                        "εR",
+                                        epsilonR!.toStringAsExponential(2),
+                                        "F/m"),
+                                    _buildStyledDataRow("σ",
+                                        sigma!.toStringAsExponential(2), "S/m"),
+                                    // frequency
                                     _sectionTitle("Operating Frequency"),
-                                    _buildStyledDataRow("Frequency", f, "Hz"),
+                                    _buildStyledDataRow("Frequency",
+                                        f!.toStringAsExponential(2), "Hz"),
+                                    // geometry
                                     _sectionTitle("Geometry"),
                                     _buildStyledDataRow("Shape", geometry, ""),
-                                    _buildStyledDataRow(
-                                        "Parameter 1", param1, "m"),
-                                    _buildStyledDataRow(
-                                        "Parameter 2", param2, "m"),
+                                    _buildStyledDataRow("Parameter 1",
+                                        param1!.toStringAsExponential(2), "m"),
+                                    _buildStyledDataRow("Parameter 2",
+                                        param2!.toStringAsExponential(2), "m"),
                                   ],
                                 ),
                               ),
@@ -211,6 +228,8 @@ class _ResultsPageState extends State<ResultsPage> {
                           ],
                         ),
                       ),
+
+                      AppWidgets.dividerBottom()
                     ],
                   ),
                 ),
@@ -232,7 +251,7 @@ class _ResultsPageState extends State<ResultsPage> {
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           child: Text(param,
               style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: AppColours.backgroundOpp)),
         ),
@@ -240,14 +259,14 @@ class _ResultsPageState extends State<ResultsPage> {
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           child: Text(
             value ?? 'N/A',
-            style: TextStyle(fontSize: 15, color: AppColours.backgroundOpp),
+            style: TextStyle(fontSize: 14, color: AppColours.backgroundOpp),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           child: Text(unit,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: AppColours.backgroundOpp)),
+              style: TextStyle(fontSize: 13, color: AppColours.backgroundOpp)),
         ),
       ],
     );
@@ -264,7 +283,7 @@ class _ResultsPageState extends State<ResultsPage> {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: AppColours.darkAccentOpp,
+              color: AppColours.accent,
             ),
           ),
           Text(
@@ -288,7 +307,7 @@ class _ResultsPageState extends State<ResultsPage> {
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.blueAccent,
+          color: AppColours.darkAccent,
         ),
       ),
     );

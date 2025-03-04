@@ -24,4 +24,11 @@ class HistoryPage extends StatelessWidget {
       ),
     );
   }
+
+  void saveToHistory() {
+    // get current date & time as heading
+    // take results & user input from results page
+    // create new entry in history page -> populate list
+    // save to local storage
+  }
 }

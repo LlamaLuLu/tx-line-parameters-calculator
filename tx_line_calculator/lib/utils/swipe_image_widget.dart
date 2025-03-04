@@ -57,7 +57,7 @@ class _SwipeImageWidgetState extends State<SwipeImageWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+      padding: const EdgeInsets.only(top: 15, left: 20, right: 20, bottom: 5),
       child: SizedBox(
         height: 190, // Adjust as needed
         child: PageView.builder(

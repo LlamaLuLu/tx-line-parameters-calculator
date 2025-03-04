@@ -33,7 +33,7 @@ class _FrequencyPageState extends State<FrequencyPage> {
                     InputFields.textField(
                         label: 'f',
                         controller: fController,
-                        hintText: 'Enter value \u00D7 10\u2079'),
+                        hintText: 'Enter value (\u00D7E9)'),
                   ],
                 ),
               ),

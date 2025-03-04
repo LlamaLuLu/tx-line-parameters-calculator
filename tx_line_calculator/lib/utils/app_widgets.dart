@@ -23,7 +23,7 @@ class AppWidgets extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 60),
+        padding: const EdgeInsets.only(bottom: 50),
         child: ElevatedButton(
           onPressed: () {
             double param1 =
@@ -73,7 +73,7 @@ class AppWidgets extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 45),
+        padding: const EdgeInsets.only(bottom: 50),
         child: ElevatedButton(
           onPressed: () {
             // do relevant calculations
@@ -186,7 +186,7 @@ class AppWidgets extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
+        padding: const EdgeInsets.only(bottom: 60, right: 45), // Adjust spacing
         child: ElevatedButton(
           onPressed: () async {
             // parse values when button is pressed
@@ -446,9 +446,21 @@ class AppWidgets extends StatelessWidget {
 
   // WIDGET COMPONENTS:
 
-  static Widget headingDivider() {
+  static Widget dividerTop() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+      padding: const EdgeInsets.only(left: 35, right: 35, top: 5),
+      child: Expanded(
+        child: Divider(
+          color: AppColours.darkAccent, // Line color
+          thickness: 1, // Line thickness
+        ),
+      ),
+    );
+  }
+
+  static Widget dividerBottom() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 35, right: 35, bottom: 10),
       child: Expanded(
         child: Divider(
           color: AppColours.darkAccent, // Line color

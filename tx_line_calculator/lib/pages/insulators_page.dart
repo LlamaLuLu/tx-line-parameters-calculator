@@ -118,7 +118,7 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                             label: 'µ',
                             controller: muRController,
                             subscript: 'r',
-                            hintText: 'Enter value \u00D7 10\u207B\u2076'),
+                            hintText: 'Enter value (\u00D7E-6)'),
                         // epsilonR & text field
                         InputFields.textField(
                             hasSubscript: true,
@@ -129,7 +129,7 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                         InputFields.textField(
                             label: 'σ',
                             controller: sigmaController,
-                            hintText: 'Enter value \u00D7 10\u207B\u2076'),
+                            hintText: 'Enter value (\u00D7E-6)'),
                       ],
                     ),
                   ),
