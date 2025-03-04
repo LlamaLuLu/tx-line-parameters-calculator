@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
 // MUST STILL CALCULATE GENERAL MU AND SIGMA
@@ -40,6 +41,7 @@ class Calculations {
   static Future<void> eval2Wire(int geometry, double D, double d) async {
     await UserInputData.saveSelectedGeometry(geometry);
     await UserInputData.save2WireData(D, d);
+    debugPrint('D: $D, d: $d');
 
     double muC = (await UserInputData.getMuC()) ??
         (4 * pi * 1e-7); // Permeability of free space
@@ -53,6 +55,8 @@ class Calculations {
         5.8e-5; // Conductivity for air or default material
     double epsilonR = (await UserInputData.getEpsilonR()) ??
         1.0; // Relative permittivity (vacuum)
+    debugPrint(
+        'muC: $muC, sigmaC: $sigmaC, f: $f, muR: $muR, sigma: $sigma, epsilonR: $epsilonR');
 
     double rS = calcRs(muC, sigmaC, f);
     double r = calcR2Wire(rS, d);

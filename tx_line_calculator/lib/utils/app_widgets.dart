@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/calculations.dart';
@@ -21,13 +23,15 @@ class AppWidgets extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
+        padding: const EdgeInsets.only(bottom: 60),
         child: ElevatedButton(
           onPressed: () {
             double param1 =
                 double.tryParse(param1Controller.text.trim()) ?? 0.0;
+            param1 *= pow(10, -3);
             double param2 =
                 double.tryParse(param2Controller.text.trim()) ?? 0.0;
+            param2 *= pow(10, -3);
             // depends on geometry:
             if (geometry == 1) {
               // coaxial
@@ -42,7 +46,6 @@ class AppWidgets extends StatelessWidget {
               Calculations.evalParallelPlate(3, param1, param2);
               // load parallel plate results
             }
-
             Navigator.pushNamed(context, '/results');
           },
           style: ElevatedButton.styleFrom(
@@ -187,9 +190,11 @@ class AppWidgets extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () async {
             // parse values when button is pressed
-            double muC = double.tryParse(muCController.text.trim()) ?? 0.0;
+            double muC = (double.tryParse(muCController.text.trim())) ?? 0.0;
+            muC *= pow(10, -6);
             double sigmaC =
                 double.tryParse(sigmaCController.text.trim()) ?? 0.0;
+            sigmaC *= pow(10, 7);
 
             await UserInputData.saveConductorData(muC, sigmaC);
 
@@ -240,9 +245,11 @@ class AppWidgets extends StatelessWidget {
           onPressed: () async {
             // parse values when button is pressed
             double muR = double.tryParse(muRController.text.trim()) ?? 0.0;
+            muR *= pow(10, -6);
             double epsilonR =
                 double.tryParse(epsilonRController.text.trim()) ?? 0.0;
             double sigma = double.tryParse(sigmaController.text.trim()) ?? 0.0;
+            sigma *= pow(10, -6);
 
             await UserInputData.saveInsulatorData(muR, epsilonR, sigma);
             Navigator.pushNamed(
@@ -288,6 +295,7 @@ class AppWidgets extends StatelessWidget {
           onPressed: () async {
             // parse values when button is pressed
             double f = double.tryParse(fController.text.trim()) ?? 0.0;
+            f *= pow(10, 9);
 
             await UserInputData.saveF(f);
             Navigator.pushNamed(context, route);
@@ -394,9 +402,9 @@ class AppWidgets extends StatelessWidget {
       // back button
       AppWidgets.backBtn(context),
 
-      const SizedBox(height: 30),
+      const SizedBox(height: 25),
 
-      // title: choose your materials:
+      // title
       Text(heading,
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -440,7 +448,7 @@ class AppWidgets extends StatelessWidget {
 
   static Widget headingDivider() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
       child: Expanded(
         child: Divider(
           color: AppColours.darkAccent, // Line color

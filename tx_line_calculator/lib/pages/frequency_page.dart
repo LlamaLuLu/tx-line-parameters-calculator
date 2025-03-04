@@ -30,7 +30,10 @@ class _FrequencyPageState extends State<FrequencyPage> {
                     AppWidgets.materialsTitle(context, 'Frequency'),
 
                     // f & text field
-                    InputFields.textField(label: 'f', controller: fController),
+                    InputFields.textField(
+                        label: 'f',
+                        controller: fController,
+                        hintText: 'Enter value \u00D7 10\u2079'),
                   ],
                 ),
               ),

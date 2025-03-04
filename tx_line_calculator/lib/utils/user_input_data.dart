@@ -24,8 +24,6 @@ class UserInputData {
   // calculated results:
   static const String rSKey = 'rS';
 
-  // NEED TO FIND WAY TO KNOW WHICH GEOMETRY WAS CHOSEN
-  // MAYBE MAKE THE GEOMETRY PARAM OF EVALBTN A STATIC VAR HERE
   static const String selectedGeometryKey = 'selectedGeometry';
 
   // coaxial

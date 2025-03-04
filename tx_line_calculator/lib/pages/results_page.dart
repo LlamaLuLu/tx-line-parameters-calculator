@@ -56,133 +56,143 @@ class _ResultsPageState extends State<ResultsPage> {
     return Scaffold(
       backgroundColor: AppColours.background,
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                Expanded(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                // Make the entire body scrollable
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      //title
+                      // title
                       AppWidgets.withHistoryTitle(context, 'Results'),
 
-                      // scrolling wheel of circuit diagram & 3d model of geometry
-                      SizedBox(height: 80),
-
                       // table of calculated parameters
-                      Text('You chose geometry: $geometry'),
                       Table(
-                        border: TableBorder.all(color: Colors.black),
+                        border: TableBorder.all(
+                            color: AppColours.darkAccent, width: 1),
                         columnWidths: {
-                          0: FixedColumnWidth(120),
-                          1: FixedColumnWidth(100),
+                          0: FixedColumnWidth(110),
+                          1: FixedColumnWidth(130),
+                          2: FixedColumnWidth(70),
                         },
                         children: [
+                          // Table Header
                           TableRow(
+                            decoration:
+                                BoxDecoration(color: AppColours.primary),
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text('R_s',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text('Parameter',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColours.ivory)),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(rS?.toStringAsFixed(3) ?? 'N/A'),
+                                child: Text('Value',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColours.ivory)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Unit',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColours.ivory)),
                               ),
                             ],
                           ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('R\'',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(r?.toStringAsFixed(3) ?? 'N/A'),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('L\'',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(l?.toStringAsFixed(3) ?? 'N/A'),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('G\'',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(g?.toStringAsFixed(3) ?? 'N/A'),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('C\'',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(c?.toStringAsFixed(3) ?? 'N/A'),
-                              ),
-                            ],
-                          ),
+                          // Data Rows
+                          _buildTableRow(
+                              'Rₛ', rS?.toStringAsExponential(2), '\u03A9/km'),
+                          _buildTableRow(
+                              "R'", r?.toStringAsExponential(2), '\u03A9/km'),
+                          _buildTableRow(
+                              "L'", l?.toStringAsExponential(2), 'H/km'),
+                          _buildTableRow(
+                              "G'", g?.toStringAsExponential(2), 'S/km'),
+                          _buildTableRow(
+                              "C'", c?.toStringAsExponential(2), 'F/km'),
                         ],
                       ),
 
                       // divider
-                      AppWidgets.headingDivider(),
+                      //AppWidgets.headingDivider(),
 
                       // toggle heading: "Your Inputs:"
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 35, bottom: 15),
-                          child: Text("Your Inputs:",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColours.darkAccent)),
+                      Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          title: Text(
+                            'Your Inputs:',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: AppColours.darkAccent,
+                            ),
+                          ),
+                          children: [
+                            // CONTENTS
+                            // table of parameters & user input values:
+                            // 1. conductor: muC, sigmaC
+                            // 2. insulator: muR, epsilonR, sigma
+                            // 3. frequency
+                            // 4. geometry: shape, dimensions (param1, param2)
+                          ],
+                          tilePadding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 4),
+                          childrenPadding: const EdgeInsets.only(
+                              bottom: 30, left: 30, right: 30, top: 10),
+                          expandedAlignment: Alignment.topLeft,
+                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                          onExpansionChanged: (bool expanded) {},
+                          controlAffinity: ListTileControlAffinity.leading,
                         ),
                       ),
-
-                      // table of parameters & usr input values
                     ],
                   ),
                 ),
-
-                // row: history btn, regenerate btn
-
-                // regenerate btn at btm center
-                AppWidgets.regenBtn(context),
-              ],
+              ),
             ),
-          ),
+
+            // Regenerate button at the bottom
+            AppWidgets.regenBtn(context),
+          ],
         ),
       ),
+    );
+  }
+
+  TableRow _buildTableRow(String param, String? value, String unit) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(param,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColours.backgroundOpp)),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            value ?? 'N/A',
+            style: TextStyle(color: AppColours.backgroundOpp),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(unit, style: TextStyle(color: AppColours.backgroundOpp)),
+        ),
+      ],
     );
   }
 }

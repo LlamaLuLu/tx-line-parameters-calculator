@@ -31,17 +31,14 @@ class _TwoWirePageState extends State<TwoWirePage> {
                         // title
                         AppWidgets.anyTitle(context, 'Two-Wire'),
 
-                        SizedBox(height: 30),
-
-                        // divider
-                        AppWidgets.headingDivider(),
+                        Image.asset('assets/2_wire_diag.PNG', height: 240),
 
                         // heading: "Enter Parameters:"
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 35, bottom: 15),
+                            padding: const EdgeInsets.only(
+                                left: 35, bottom: 10, top: 25),
                             child: Text("Enter Parameters:",
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
@@ -53,9 +50,13 @@ class _TwoWirePageState extends State<TwoWirePage> {
 
                         // 2 text fields: a, b
                         InputFields.textField(
-                            label: 'D', controller: DController),
+                            label: 'D',
+                            controller: DController,
+                            hintText: 'Enter value in mm'),
                         InputFields.textField(
-                            label: 'd', controller: dController),
+                            label: 'd',
+                            controller: dController,
+                            hintText: 'Enter value in mm'),
                       ],
                     ),
                   ),

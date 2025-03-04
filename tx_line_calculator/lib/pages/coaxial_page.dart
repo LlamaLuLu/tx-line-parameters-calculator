@@ -31,17 +31,14 @@ class _CoaxialPageState extends State<CoaxialPage> {
                         // title
                         AppWidgets.anyTitle(context, 'Coaxial'),
 
-                        SizedBox(height: 30),
-
-                        // divider
-                        AppWidgets.headingDivider(),
+                        Image.asset('assets/coaxial_diag.PNG', height: 240),
 
                         // heading: "Enter Parameters:"
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 35, bottom: 15),
+                            padding: const EdgeInsets.only(
+                                left: 35, bottom: 10, top: 25),
                             child: Text("Enter Parameters:",
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
@@ -53,9 +50,13 @@ class _CoaxialPageState extends State<CoaxialPage> {
 
                         // 2 text fields: a, b
                         InputFields.textField(
-                            label: 'a', controller: aController),
+                            label: 'a',
+                            controller: aController,
+                            hintText: 'Enter value in mm'),
                         InputFields.textField(
-                            label: 'b', controller: bController),
+                            label: 'b',
+                            controller: bController,
+                            hintText: 'Enter value in mm'),
                       ],
                     ),
                   ),

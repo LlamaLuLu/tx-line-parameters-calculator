@@ -31,17 +31,15 @@ class _ParallelPlateState extends State<ParallelPlate> {
                         // title
                         AppWidgets.anyTitle(context, 'Parallel Plate'),
 
-                        SizedBox(height: 30),
-
-                        // divider
-                        AppWidgets.headingDivider(),
+                        Image.asset('assets/parallel_plate_diag.PNG',
+                            height: 240),
 
                         // heading: "Enter Parameters:"
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 35, bottom: 15),
+                            padding: const EdgeInsets.only(
+                                left: 35, bottom: 10, top: 25),
                             child: Text("Enter Parameters:",
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
@@ -53,9 +51,13 @@ class _ParallelPlateState extends State<ParallelPlate> {
 
                         // 2 text fields: a, b
                         InputFields.textField(
-                            label: 'w', controller: wController),
+                            label: 'w',
+                            controller: wController,
+                            hintText: 'Enter value in mm'),
                         InputFields.textField(
-                            label: 'h', controller: hController),
+                            label: 'h',
+                            controller: hController,
+                            hintText: 'Enter value in mm'),
                       ],
                     ),
                   ),
