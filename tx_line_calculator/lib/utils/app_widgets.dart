@@ -73,7 +73,7 @@ class AppWidgets extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
+        padding: const EdgeInsets.only(bottom: 45),
         child: ElevatedButton(
           onPressed: () {
             // do relevant calculations
@@ -412,7 +412,7 @@ class AppWidgets extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: AppColours.backgroundOpp)),
 
-      SizedBox(height: 20),
+      SizedBox(height: 15),
     ]);
   }
 

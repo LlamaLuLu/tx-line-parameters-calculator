@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   // title: Tx Line Parameters
                   Padding(
-                    padding: const EdgeInsets.only(top: 90),
+                    padding: const EdgeInsets.only(top: 90, bottom: 50),
                     child: Text('Tx Line\nParameters',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
@@ -31,6 +31,18 @@ class HomePage extends StatelessWidget {
                   ),
 
                   // circuit diagram image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child:
+                        Image.asset('assets/equiv_cct.PNG', fit: BoxFit.cover),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Lumped Element Model',
+                        style: TextStyle(
+                            fontSize: 16, color: AppColours.darkAccent)),
+                  ),
 
                   // additional: history button
                 ],

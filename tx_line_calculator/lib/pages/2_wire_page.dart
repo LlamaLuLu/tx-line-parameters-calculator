@@ -31,7 +31,11 @@ class _TwoWirePageState extends State<TwoWirePage> {
                         // title
                         AppWidgets.anyTitle(context, 'Two-Wire'),
 
-                        Image.asset('assets/2_wire_diag.PNG', height: 240),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset('assets/2_wire_diag.PNG',
+                              fit: BoxFit.cover),
+                        ),
 
                         // heading: "Enter Parameters:"
                         Align(

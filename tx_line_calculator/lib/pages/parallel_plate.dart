@@ -31,8 +31,11 @@ class _ParallelPlateState extends State<ParallelPlate> {
                         // title
                         AppWidgets.anyTitle(context, 'Parallel Plate'),
 
-                        Image.asset('assets/parallel_plate_diag.PNG',
-                            height: 240),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset('assets/parallel_plate_diag.PNG',
+                              fit: BoxFit.cover),
+                        ),
 
                         // heading: "Enter Parameters:"
                         Align(

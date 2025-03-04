@@ -31,7 +31,11 @@ class _CoaxialPageState extends State<CoaxialPage> {
                         // title
                         AppWidgets.anyTitle(context, 'Coaxial'),
 
-                        Image.asset('assets/coaxial_diag.PNG', height: 240),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset('assets/coaxial_diag.PNG',
+                              fit: BoxFit.cover),
+                        ),
 
                         // heading: "Enter Parameters:"
                         Align(

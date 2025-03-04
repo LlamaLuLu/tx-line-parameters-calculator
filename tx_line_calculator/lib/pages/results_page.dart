@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
+import 'package:tx_line_calculator/utils/swipe_image_widget.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
 class ResultsPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class ResultsPage extends StatefulWidget {
 
 class _ResultsPageState extends State<ResultsPage> {
   double? rS, r, l, g, c;
+  double? muC, sigmaC, muR, epsilonR, sigma, f, param1, param2;
   int? geometryCode;
   String? geometry;
 
@@ -23,13 +25,26 @@ class _ResultsPageState extends State<ResultsPage> {
 
   Future<void> loadResults() async {
     // Fetch results from UserInputData
+    muC = await UserInputData.getMuC();
+    sigmaC = await UserInputData.getSigmaC();
+    muR = await UserInputData.getMuR();
+    epsilonR = await UserInputData.getEpsilonR();
+    sigma = await UserInputData.getSigma();
+    f = await UserInputData.getF();
+
     geometryCode = await UserInputData.getSelectedGeometry();
     if (geometryCode == 1) {
       geometry = 'Coaxial';
+      param1 = await UserInputData.getA();
+      param2 = await UserInputData.getB();
     } else if (geometryCode == 2) {
       geometry = '2-Wire';
+      param1 = await UserInputData.getD();
+      param2 = await UserInputData.getDiameter();
     } else if (geometryCode == 3) {
       geometry = 'Parallel Plate';
+      param1 = await UserInputData.getW();
+      param2 = await UserInputData.getH();
     }
 
     rS = await UserInputData.getRS();
@@ -74,8 +89,8 @@ class _ResultsPageState extends State<ResultsPage> {
                             color: AppColours.darkAccent, width: 1),
                         columnWidths: {
                           0: FixedColumnWidth(110),
-                          1: FixedColumnWidth(130),
-                          2: FixedColumnWidth(70),
+                          1: FixedColumnWidth(135),
+                          2: FixedColumnWidth(65),
                         },
                         children: [
                           // Table Header
@@ -88,6 +103,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                 child: Text('Parameter',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                         color: AppColours.ivory)),
                               ),
@@ -96,6 +112,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                 child: Text('Value',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                         color: AppColours.ivory)),
                               ),
@@ -104,6 +121,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                 child: Text('Unit',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                         color: AppColours.ivory)),
                               ),
@@ -111,20 +129,28 @@ class _ResultsPageState extends State<ResultsPage> {
                           ),
                           // Data Rows
                           _buildTableRow(
-                              'Rₛ', rS?.toStringAsExponential(2), '\u03A9/km'),
+                              'Rₛ', rS?.toStringAsExponential(2), '\u03A9/m'),
                           _buildTableRow(
-                              "R'", r?.toStringAsExponential(2), '\u03A9/km'),
+                              "R'", r?.toStringAsExponential(2), '\u03A9/m'),
                           _buildTableRow(
-                              "L'", l?.toStringAsExponential(2), 'H/km'),
+                              "L'", l?.toStringAsExponential(2), 'H/m'),
                           _buildTableRow(
-                              "G'", g?.toStringAsExponential(2), 'S/km'),
+                              "G'", g?.toStringAsExponential(2), 'S/m'),
                           _buildTableRow(
-                              "C'", c?.toStringAsExponential(2), 'F/km'),
+                              "C'", c?.toStringAsExponential(2), 'F/m'),
                         ],
                       ),
 
-                      // divider
-                      //AppWidgets.headingDivider(),
+                      // chosen geometry
+                      SwipeImageWidget(
+                        imagePaths: [
+                          if (geometryCode == 1) "assets/coaxial_diag.PNG",
+                          if (geometryCode == 2) "assets/2_wire_diag.PNG",
+                          if (geometryCode == 3)
+                            "assets/parallel_plate_diag.PNG",
+                          "assets/equiv_cct.PNG",
+                        ],
+                      ),
 
                       // toggle heading: "Your Inputs:"
                       Theme(
@@ -139,22 +165,50 @@ class _ResultsPageState extends State<ResultsPage> {
                               color: AppColours.darkAccent,
                             ),
                           ),
-                          children: [
-                            // CONTENTS
-                            // table of parameters & user input values:
-                            // 1. conductor: muC, sigmaC
-                            // 2. insulator: muR, epsilonR, sigma
-                            // 3. frequency
-                            // 4. geometry: shape, dimensions (param1, param2)
-                          ],
-                          tilePadding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 4),
+                          tilePadding:
+                              const EdgeInsets.symmetric(horizontal: 20),
                           childrenPadding: const EdgeInsets.only(
-                              bottom: 30, left: 30, right: 30, top: 10),
+                              bottom: 30, left: 30, right: 30),
                           expandedAlignment: Alignment.topLeft,
                           expandedCrossAxisAlignment: CrossAxisAlignment.start,
                           onExpansionChanged: (bool expanded) {},
                           controlAffinity: ListTileControlAffinity.leading,
+                          children: [
+                            Card(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                side: BorderSide(
+                                    color: AppColours.secondary, width: 1.5),
+                              ),
+                              color: AppColours.ivory,
+                              child: Padding(
+                                padding: const EdgeInsets.all(18),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _sectionTitle("Conductor Properties"),
+                                    _buildStyledDataRow("μC", muC, "H/m"),
+                                    _buildStyledDataRow("σC", sigmaC, "S/m"),
+                                    _sectionTitle("Insulator Properties"),
+                                    _buildStyledDataRow("μR", muR, "H/m"),
+                                    _buildStyledDataRow("εR", epsilonR, "F/m"),
+                                    _buildStyledDataRow("σ", sigma, "S/m"),
+                                    _sectionTitle("Operating Frequency"),
+                                    _buildStyledDataRow("Frequency", f, "Hz"),
+                                    _sectionTitle("Geometry"),
+                                    _buildStyledDataRow("Shape", geometry, ""),
+                                    _buildStyledDataRow(
+                                        "Parameter 1", param1, "m"),
+                                    _buildStyledDataRow(
+                                        "Parameter 2", param2, "m"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -175,24 +229,68 @@ class _ResultsPageState extends State<ResultsPage> {
     return TableRow(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           child: Text(param,
               style: TextStyle(
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: AppColours.backgroundOpp)),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           child: Text(
             value ?? 'N/A',
-            style: TextStyle(color: AppColours.backgroundOpp),
+            style: TextStyle(fontSize: 15, color: AppColours.backgroundOpp),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(unit, style: TextStyle(color: AppColours.backgroundOpp)),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: Text(unit,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: AppColours.backgroundOpp)),
         ),
       ],
+    );
+  }
+
+  Widget _buildStyledDataRow(String label, dynamic value, String unit) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: AppColours.darkAccentOpp,
+            ),
+          ),
+          Text(
+            value != null ? "$value $unit" : "N/A",
+            style: TextStyle(
+              fontSize: 15,
+              color: AppColours.secondaryOpp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, bottom: 6),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.blueAccent,
+        ),
+      ),
     );
   }
 }
