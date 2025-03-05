@@ -29,7 +29,7 @@ class _CoaxialPageState extends State<CoaxialPage> {
                     child: Column(
                       children: [
                         // title
-                        AppWidgets.anyTitle(context, 'Coaxial'),
+                        AppWidgets.anyTitle(context, 'Coaxial Line'),
 
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),

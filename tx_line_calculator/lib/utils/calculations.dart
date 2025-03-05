@@ -1,17 +1,22 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
+import 'package:complex/complex.dart';
 import 'package:tx_line_calculator/utils/constants.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
 // MUST STILL CALCULATE GENERAL MU AND SIGMA
 
 class Calculations {
+/*
+  EVALUATE BTN CALCULATIONS
+*/
+
 // evaluate coaxial params
   static Future<void> evalCoaxial(int geometry, double a, double b) async {
     double? muC = await UserInputData.getMuC();
     double? sigmaC = await UserInputData.getSigmaC();
     double? f = await UserInputData.getF();
     double? muR = await UserInputData.getMuR();
+    // conditional
     double mu = muR! * Constants.mu0;
     double? epsilonR = await UserInputData.getEpsilonR();
     double epsilon = epsilonR! * Constants.epsilon0;
@@ -19,7 +24,7 @@ class Calculations {
 
     double rS = calcRs(muC!, sigmaC!, f!);
     double r = calcRCoaxial(rS, a, b);
-    double l = calcLCoaxial(mu, a, b);
+    double l = calcLCoaxial(muR!, a, b);
     double g = calcGCoaxial(sigma!, a, b);
     double c = calcCCoaxial(epsilon, a, b);
 
@@ -32,6 +37,7 @@ class Calculations {
     double? sigmaC = await UserInputData.getSigmaC();
     double? f = await UserInputData.getF();
     double? muR = await UserInputData.getMuR();
+    // conditional
     double mu = muR! * Constants.mu0;
     double? epsilonR = await UserInputData.getEpsilonR();
     double epsilon = epsilonR! * Constants.epsilon0;
@@ -39,7 +45,7 @@ class Calculations {
 
     double rS = calcRs(muC!, sigmaC!, f!);
     double r = calcR2Wire(rS, d);
-    double l = calcL2Wire(mu, D, d);
+    double l = calcL2Wire(muR!, D, d);
     double g = calcG2Wire(sigma!, D, d);
     double c = calcC2Wire(epsilon, D, d);
 
@@ -53,6 +59,7 @@ class Calculations {
     double? sigmaC = await UserInputData.getSigmaC();
     double? f = await UserInputData.getF();
     double? muR = await UserInputData.getMuR();
+    // conditional
     double mu = muR! * Constants.mu0;
     double? epsilonR = await UserInputData.getEpsilonR();
     double epsilon = epsilonR! * Constants.epsilon0;
@@ -60,12 +67,56 @@ class Calculations {
 
     double rS = calcRs(muC!, sigmaC!, f!);
     double r = calcRParallel(rS, w);
-    double l = calcLParallel(mu, w, h);
+    double l = calcLParallel(muR!, w, h);
     double g = calcGParallel(sigma!, w, h);
     double c = calcCParallel(epsilon, w, h);
 
     await UserInputData.saveParallelPlateResults(rS, r, l, g, c);
   }
+
+/*
+  RELEVANT FORMULAE:
+*/
+
+// calc gamma, alpha, beta
+  static Future<void> calcPropConstants() async {
+    // get r,l,g,c,f from user input
+    double? r = await UserInputData.getR();
+    double? l = await UserInputData.getL();
+    double? g = await UserInputData.getG();
+    double? c = await UserInputData.getC();
+    double? f = await UserInputData.getF();
+
+    Complex gamma = calcGamma(r!, l!, g!, c!, f!);
+    double alpha = calcAlpha(gamma);
+    double beta = calcBeta(gamma);
+
+    // save prop constants
+  }
+
+// calculate complex propagation constant (gamma)
+  static Complex calcGamma(double r, double l, double g, double c, double f) {
+    double omega = 2 * pi * f;
+    Complex term1 = Complex(r, omega * l); // R' + jωL'
+    Complex term2 = Complex(g, omega * c); // G' + jωC'
+    return (term1 * term2).sqrt();
+  }
+
+// calculate attenuation constant (alpha)
+  static double calcAlpha(Complex gamma) {
+    return gamma.real;
+  }
+
+// calculate phase constant (beta)
+  static double calcBeta(Complex gamma) {
+    return gamma.imaginary;
+  }
+
+// calculate characteristic impedance (z0)
+
+// calculate phase velocity (v)
+
+// calculate wavelength (lambda)
 
 // calculate Rs
   static double calcRs(double muC, double sigmaC, double f) {

@@ -29,7 +29,7 @@ class _ParallelPlateState extends State<ParallelPlate> {
                     child: Column(
                       children: [
                         // title
-                        AppWidgets.anyTitle(context, 'Parallel Plate'),
+                        AppWidgets.anyTitle(context, 'Parallel Plate Line'),
 
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),

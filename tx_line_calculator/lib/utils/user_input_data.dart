@@ -1,8 +1,13 @@
 import 'dart:math';
 
+import 'package:complex/complex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInputData {
+  /*
+    VARIABLES:
+  */
+
   // conductor data
   static const String muCKey = 'muC';
   static const String sigmaCKey = 'sigmaC';
@@ -12,6 +17,8 @@ class UserInputData {
   static const String sigmaKey = 'sigma';
   // frequency
   static const String fKey = 'f';
+
+  static const String selectedGeometryKey = 'selectedGeometry';
 
   // coaxial data
   static const String aKey = 'a';
@@ -25,8 +32,6 @@ class UserInputData {
 
   // calculated results:
   static const String rSKey = 'rS';
-
-  static const String selectedGeometryKey = 'selectedGeometry';
 
   // coaxial
   static const String rCoaxialKey = 'rCoaxial';
@@ -44,13 +49,38 @@ class UserInputData {
   static const String gParallelKey = 'gParallel';
   static const String cParallelKey = 'cParallel';
 
-  // save geometry
+  // complex propagation constant
+  static const String gammaKey = 'propConst';
+  static const String alphaKey = 'attenConst';
+  static const String betaKey = 'phaseConst';
+
+  // characteristic impedance
+
+  // phase velocity
+
+  // wavelength
+
+  /*
+    FUNCTIONS:
+  */
+
+  // complex propagation constant
+  static Future<void> saveGamma(Complex gamma) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(alphaKey, gamma.real);
+    await prefs.setDouble(betaKey, gamma.imaginary);
+  }
+
+  // attenuation constant
+
+  // phase constant
+
+  // geometry
   static Future<void> saveSelectedGeometry(int geometry) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(selectedGeometryKey, geometry);
   }
 
-  // get geometry
   static Future<int?> getSelectedGeometry() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(selectedGeometryKey);
@@ -253,7 +283,7 @@ class UserInputData {
     return prefs.getDouble(hKey) ?? 0.0;
   }
 
-  // rS
+  // rS,r,l,g,c
   static Future<void> saveRS(double value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(rSKey, value);

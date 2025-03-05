@@ -29,7 +29,7 @@ class _TwoWirePageState extends State<TwoWirePage> {
                     child: Column(
                       children: [
                         // title
-                        AppWidgets.anyTitle(context, 'Two-Wire'),
+                        AppWidgets.anyTitle(context, 'Two-Wire Line'),
 
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
