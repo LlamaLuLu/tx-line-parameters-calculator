@@ -1,68 +1,47 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:tx_line_calculator/utils/constants.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
 // MUST STILL CALCULATE GENERAL MU AND SIGMA
 
 class Calculations {
-// calculate Rs
-  static double calcRs(double muC, double sigmaC, double f) {
-    return sqrt((pi * f * muC) / sigmaC);
-  }
-
 // evaluate coaxial params
   static Future<void> evalCoaxial(int geometry, double a, double b) async {
-    await UserInputData.saveSelectedGeometry(geometry);
-    await UserInputData.saveCoaxialData(a, b);
+    double? muC = await UserInputData.getMuC();
+    double? sigmaC = await UserInputData.getSigmaC();
+    double? f = await UserInputData.getF();
+    double? muR = await UserInputData.getMuR();
+    double mu = muR! * Constants.mu0;
+    double? epsilonR = await UserInputData.getEpsilonR();
+    double epsilon = epsilonR! * Constants.epsilon0;
+    double? sigma = await UserInputData.getSigma();
 
-    double muC = (await UserInputData.getMuC()) ??
-        (4 * pi * 1e-7); // Permeability of free space
-    double sigmaC =
-        (await UserInputData.getSigmaC()) ?? 5.8e7; // Conductivity of copper
-    double f =
-        (await UserInputData.getF()) ?? 60.0; // Default frequency (60 Hz)
-    double muR =
-        (await UserInputData.getMuR()) ?? 1.0; // Relative permeability (vacuum)
-    double sigma = (await UserInputData.getSigma()) ??
-        5.8e-5; // Conductivity for air or default material
-    double epsilonR = (await UserInputData.getEpsilonR()) ??
-        1.0; // Relative permittivity (vacuum)
-
-    double rS = calcRs(muC, sigmaC, f);
+    double rS = calcRs(muC!, sigmaC!, f!);
     double r = calcRCoaxial(rS, a, b);
-    double l = calcLCoaxial(muR, a, b);
-    double g = calcGCoaxial(sigma, a, b);
-    double c = calcCCoaxial(epsilonR, a, b);
+    double l = calcLCoaxial(mu, a, b);
+    double g = calcGCoaxial(sigma!, a, b);
+    double c = calcCCoaxial(epsilon, a, b);
 
     await UserInputData.saveCoaxialResults(rS, r, l, g, c);
   }
 
 // evaluate 2-wire params
   static Future<void> eval2Wire(int geometry, double D, double d) async {
-    await UserInputData.saveSelectedGeometry(geometry);
-    await UserInputData.save2WireData(D, d);
-    debugPrint('D: $D, d: $d');
+    double? muC = await UserInputData.getMuC();
+    double? sigmaC = await UserInputData.getSigmaC();
+    double? f = await UserInputData.getF();
+    double? muR = await UserInputData.getMuR();
+    double mu = muR! * Constants.mu0;
+    double? epsilonR = await UserInputData.getEpsilonR();
+    double epsilon = epsilonR! * Constants.epsilon0;
+    double? sigma = await UserInputData.getSigma();
 
-    double muC = (await UserInputData.getMuC()) ??
-        (4 * pi * 1e-7); // Permeability of free space
-    double sigmaC =
-        (await UserInputData.getSigmaC()) ?? 5.8e7; // Conductivity of copper
-    double f =
-        (await UserInputData.getF()) ?? 60.0; // Default frequency (60 Hz)
-    double muR =
-        (await UserInputData.getMuR()) ?? 1.0; // Relative permeability (vacuum)
-    double sigma = (await UserInputData.getSigma()) ??
-        5.8e-5; // Conductivity for air or default material
-    double epsilonR = (await UserInputData.getEpsilonR()) ??
-        1.0; // Relative permittivity (vacuum)
-    debugPrint(
-        'muC: $muC, sigmaC: $sigmaC, f: $f, muR: $muR, sigma: $sigma, epsilonR: $epsilonR');
-
-    double rS = calcRs(muC, sigmaC, f);
+    double rS = calcRs(muC!, sigmaC!, f!);
     double r = calcR2Wire(rS, d);
-    double l = calcL2Wire(muR, D, d);
-    double g = calcG2Wire(sigma, D, d);
-    double c = calcC2Wire(epsilonR, D, d);
+    double l = calcL2Wire(mu, D, d);
+    double g = calcG2Wire(sigma!, D, d);
+    double c = calcC2Wire(epsilon, D, d);
 
     await UserInputData.save2WireResults(rS, r, l, g, c);
   }
@@ -70,29 +49,27 @@ class Calculations {
 // evaluate parallel plate params
   static Future<void> evalParallelPlate(
       int geometry, double w, double h) async {
-    await UserInputData.saveSelectedGeometry(geometry);
-    await UserInputData.saveParallelPlateData(w, h);
+    double? muC = await UserInputData.getMuC();
+    double? sigmaC = await UserInputData.getSigmaC();
+    double? f = await UserInputData.getF();
+    double? muR = await UserInputData.getMuR();
+    double mu = muR! * Constants.mu0;
+    double? epsilonR = await UserInputData.getEpsilonR();
+    double epsilon = epsilonR! * Constants.epsilon0;
+    double? sigma = await UserInputData.getSigma();
 
-    double muC = (await UserInputData.getMuC()) ??
-        (4 * pi * 1e-7); // Permeability of free space
-    double sigmaC =
-        (await UserInputData.getSigmaC()) ?? 5.8e7; // Conductivity of copper
-    double f =
-        (await UserInputData.getF()) ?? 60.0; // Default frequency (60 Hz)
-    double muR =
-        (await UserInputData.getMuR()) ?? 1.0; // Relative permeability (vacuum)
-    double sigma = (await UserInputData.getSigma()) ??
-        5.8e-5; // Conductivity for air or default material
-    double epsilonR = (await UserInputData.getEpsilonR()) ??
-        1.0; // Relative permittivity (vacuum)
-
-    double rS = calcRs(muC, sigmaC, f);
+    double rS = calcRs(muC!, sigmaC!, f!);
     double r = calcRParallel(rS, w);
-    double l = calcLParallel(muR, w, h);
-    double g = calcGParallel(sigma, w, h);
-    double c = calcCParallel(epsilonR, w, h);
+    double l = calcLParallel(mu, w, h);
+    double g = calcGParallel(sigma!, w, h);
+    double c = calcCParallel(epsilon, w, h);
 
     await UserInputData.saveParallelPlateResults(rS, r, l, g, c);
+  }
+
+// calculate Rs
+  static double calcRs(double muC, double sigmaC, double f) {
+    return sqrt((pi * f * muC) / sigmaC);
   }
 
 // calculate R'
@@ -115,7 +92,7 @@ class Calculations {
 
   static double calcL2Wire(double mu, double D, double d) {
     double ratio = D / d;
-    return ratio + sqrt(pow(ratio, 2) - 1);
+    return (mu / pi) * log(ratio + sqrt(pow(ratio, 2) - 1));
   }
 
   static double calcLParallel(double mu, double w, double h) {

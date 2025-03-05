@@ -40,7 +40,7 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // Button 1: Copper
+                              // Preset 1
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -66,12 +66,12 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 40), // Same height
                                     ),
-                                    child: const Text('Air'),
+                                    child: const Text('Teflon'),
                                   ),
                                 ),
                               ),
 
-                              // Button 2: Aluminium
+                              // Preset 2
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -97,7 +97,7 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 40), // Same height
                                     ),
-                                    child: const Text('Polythylene'),
+                                    child: const Text('Air'),
                                   ),
                                 ),
                               ),

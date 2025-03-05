@@ -15,6 +15,160 @@ class AppWidgets extends StatelessWidget {
 
   // BUTTONS:
 
+  static Widget nextBtnConductor(
+      BuildContext context,
+      String route,
+      TextEditingController muCController,
+      TextEditingController sigmaCController) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 60, right: 45), // Adjust spacing
+        child: ElevatedButton(
+          onPressed: () async {
+            // parse values when button is pressed
+            double muC = (double.tryParse(muCController.text.trim())) ?? 0.0;
+            muC *= pow(10, -6);
+            double sigmaC =
+                double.tryParse(sigmaCController.text.trim()) ?? 0.0;
+            sigmaC *= pow(10, 7);
+
+            await UserInputData.saveConductorData(muC, sigmaC);
+
+            Navigator.pushNamed(
+                context, route); // Replace with your actual route
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Use your theme color
+            foregroundColor: AppColours.background, // White text for contrast
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4, // Slight shadow for depth
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Next'), // Button text
+              SizedBox(width: 8), // Space between text and icon
+              Icon(
+                Icons.arrow_forward,
+                size: 22,
+                color: AppColours.background,
+              ), // Arrow icon
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget nextBtnInsulator(
+      BuildContext context,
+      String route,
+      TextEditingController muRController,
+      TextEditingController epsilonRController,
+      TextEditingController sigmaController) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
+        child: ElevatedButton(
+          onPressed: () async {
+            // parse values when button is pressed
+            double muR = double.tryParse(muRController.text.trim()) ?? 0.0;
+            muR *= pow(10, -6);
+            double epsilonR =
+                double.tryParse(epsilonRController.text.trim()) ?? 0.0;
+            double sigma = double.tryParse(sigmaController.text.trim()) ?? 0.0;
+            sigma *= pow(10, -6);
+
+            debugPrint("muR: $muR, epsilonR: $epsilonR, sigma: $sigma");
+
+            await UserInputData.saveInsulatorData(muR, epsilonR, sigma);
+            Navigator.pushNamed(
+                context, route); // Replace with your actual route
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Use your theme color
+            foregroundColor: AppColours.background, // White text for contrast
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4, // Slight shadow for depth
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Next'), // Button text
+              SizedBox(width: 8), // Space between text and icon
+              Icon(
+                Icons.arrow_forward,
+                size: 22,
+                color: AppColours.background,
+              ), // Arrow icon
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget nextBtnFrequency(
+      BuildContext context, String route, TextEditingController fController) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 55, right: 45),
+        child: ElevatedButton(
+          onPressed: () async {
+            // parse values when button is pressed
+            double f = double.tryParse(fController.text.trim()) ?? 0.0;
+            f *= pow(10, 9);
+
+            await UserInputData.saveF(f);
+            Navigator.pushNamed(context, route);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary,
+            foregroundColor: AppColours.background,
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4, // Slight shadow for depth
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Next'), // Button text
+              SizedBox(width: 8), // Space between text and icon
+              Icon(
+                Icons.arrow_forward,
+                size: 22,
+                color: AppColours.background,
+              ), // Arrow icon
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   static Widget evaluateBtn(
       BuildContext context,
       int geometry,
@@ -25,24 +179,29 @@ class AppWidgets extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 50),
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             double param1 =
                 double.tryParse(param1Controller.text.trim()) ?? 0.0;
             param1 *= pow(10, -3);
             double param2 =
                 double.tryParse(param2Controller.text.trim()) ?? 0.0;
             param2 *= pow(10, -3);
+
+            await UserInputData.saveSelectedGeometry(geometry);
             // depends on geometry:
             if (geometry == 1) {
               // coaxial
+              await UserInputData.saveCoaxialData(param1, param2);
               Calculations.evalCoaxial(1, param1, param2);
               // load coaxial results
             } else if (geometry == 2) {
               // 2-wire
+              await UserInputData.save2WireData(param1, param2);
               Calculations.eval2Wire(2, param1, param2);
               // load 2-wire results
             } else if (geometry == 3) {
               // parallel plate
+              await UserInputData.saveParallelPlateData(param1, param2);
               Calculations.evalParallelPlate(3, param1, param2);
               // load parallel plate results
             }
@@ -172,158 +331,6 @@ class AppWidgets extends StatelessWidget {
               color: AppColours.ivory, // Change to fit your theme
               size: 26,
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  static Widget nextBtnConductor(
-      BuildContext context,
-      String route,
-      TextEditingController muCController,
-      TextEditingController sigmaCController) {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 60, right: 45), // Adjust spacing
-        child: ElevatedButton(
-          onPressed: () async {
-            // parse values when button is pressed
-            double muC = (double.tryParse(muCController.text.trim())) ?? 0.0;
-            muC *= pow(10, -6);
-            double sigmaC =
-                double.tryParse(sigmaCController.text.trim()) ?? 0.0;
-            sigmaC *= pow(10, 7);
-
-            await UserInputData.saveConductorData(muC, sigmaC);
-
-            Navigator.pushNamed(
-                context, route); // Replace with your actual route
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColours.primary, // Use your theme color
-            foregroundColor: AppColours.background, // White text for contrast
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-            textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
-            ),
-            elevation: 4, // Slight shadow for depth
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Next'), // Button text
-              SizedBox(width: 8), // Space between text and icon
-              Icon(
-                Icons.arrow_forward,
-                size: 22,
-                color: AppColours.background,
-              ), // Arrow icon
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  static Widget nextBtnInsulator(
-      BuildContext context,
-      String route,
-      TextEditingController muRController,
-      TextEditingController epsilonRController,
-      TextEditingController sigmaController) {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 55, right: 45), // Adjust spacing
-        child: ElevatedButton(
-          onPressed: () async {
-            // parse values when button is pressed
-            double muR = double.tryParse(muRController.text.trim()) ?? 0.0;
-            muR *= pow(10, -6);
-            double epsilonR =
-                double.tryParse(epsilonRController.text.trim()) ?? 0.0;
-            double sigma = double.tryParse(sigmaController.text.trim()) ?? 0.0;
-            sigma *= pow(10, -6);
-
-            await UserInputData.saveInsulatorData(muR, epsilonR, sigma);
-            Navigator.pushNamed(
-                context, route); // Replace with your actual route
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColours.primary, // Use your theme color
-            foregroundColor: AppColours.background, // White text for contrast
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-            textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
-            ),
-            elevation: 4, // Slight shadow for depth
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Next'), // Button text
-              SizedBox(width: 8), // Space between text and icon
-              Icon(
-                Icons.arrow_forward,
-                size: 22,
-                color: AppColours.background,
-              ), // Arrow icon
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  static Widget nextBtnFrequency(
-      BuildContext context, String route, TextEditingController fController) {
-    return Align(
-      alignment: Alignment.bottomRight,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 55, right: 45),
-        child: ElevatedButton(
-          onPressed: () async {
-            // parse values when button is pressed
-            double f = double.tryParse(fController.text.trim()) ?? 0.0;
-            f *= pow(10, 9);
-
-            await UserInputData.saveF(f);
-            Navigator.pushNamed(context, route);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColours.primary,
-            foregroundColor: AppColours.background,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-            textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
-            ),
-            elevation: 4, // Slight shadow for depth
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Next'), // Button text
-              SizedBox(width: 8), // Space between text and icon
-              Icon(
-                Icons.arrow_forward,
-                size: 22,
-                color: AppColours.background,
-              ), // Arrow icon
-            ],
           ),
         ),
       ),

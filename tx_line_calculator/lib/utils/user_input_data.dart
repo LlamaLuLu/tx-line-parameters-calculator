@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInputData {
@@ -65,7 +67,7 @@ class UserInputData {
       double muR, double epsilonR, double sigma) async {
     await saveMuR(muR);
     await saveEpsilonR(epsilonR);
-    await saveEpsilonR(sigma);
+    await saveSigma(sigma);
   }
 
   // save coaxial data
@@ -124,7 +126,8 @@ class UserInputData {
 
   static Future<double?> getMuC() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(muCKey) ?? 0.0;
+    return prefs.getDouble(muCKey) ??
+        (4 * pi * 1e-7); // Permeability of free space
   }
 
   // sigmaC
@@ -135,7 +138,7 @@ class UserInputData {
 
   static Future<double?> getSigmaC() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(sigmaCKey) ?? 0.0;
+    return prefs.getDouble(sigmaCKey) ?? 4e7; // Conductivity of copper
   }
 
   // muR
@@ -146,7 +149,7 @@ class UserInputData {
 
   static Future<double?> getMuR() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(muRKey) ?? 0.0;
+    return prefs.getDouble(muRKey) ?? 1.0; // Relative permeability (vacuum)
   }
 
   // epsilonR
@@ -157,7 +160,8 @@ class UserInputData {
 
   static Future<double?> getEpsilonR() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(epsilonRKey) ?? 0.0;
+    return prefs.getDouble(epsilonRKey) ??
+        1.0; // Relative permittivity (vacuum)
   }
 
   // sigma
@@ -168,10 +172,11 @@ class UserInputData {
 
   static Future<double?> getSigma() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(sigmaKey) ?? 0.0;
+    return prefs.getDouble(sigmaKey) ??
+        4e-5; // Conductivity for air or default material
   }
 
-  // f
+  // frequency
   static Future<void> saveF(double value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(fKey, value);
@@ -179,7 +184,7 @@ class UserInputData {
 
   static Future<double?> getF() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(fKey) ?? 0.0;
+    return prefs.getDouble(fKey) ?? 2e9; // Default frequency (2 GHz)
   }
 
   // a
@@ -454,35 +459,4 @@ class UserInputData {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getDouble(cParallelKey) ?? 0.0;
   }
-
-  // static final UserInputData _instance = UserInputData._internal();
-  // factory UserInputData() => _instance;
-  // UserInputData._internal();
-
-  // String mu = '';
-  // String sigma = '';
-
-  // void save(String newMu, String newSigma) {
-  //   mu = newMu;
-  //   sigma = newSigma;
-  //   print('Saved: µ=$mu, σ=$sigma');
-  // }
-
-  // Future<void> saveUserData() async {
-  //   UserInputData().save(muController.text, sigmaController.text);
-  // }
-
-  // Future<void> saveUserData() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString('mu', muController.text);
-  //   await prefs.setString('sigma', sigmaController.text);
-  //   print('Data saved: µ=${muController.text}, σ=${sigmaController.text}');
-  // }
-
-  // Future<void> loadUserData() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   muController.text = prefs.getString('mu') ?? '';
-  //   sigmaController.text = prefs.getString('sigma') ?? '';
-  //   print('Loaded: µ=${muController.text}, σ=${sigmaController.text}');
-  // }
 }

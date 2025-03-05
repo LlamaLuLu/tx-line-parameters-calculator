@@ -35,16 +35,16 @@ class _ResultsPageState extends State<ResultsPage> {
     geometryCode = await UserInputData.getSelectedGeometry();
     if (geometryCode == 1) {
       geometry = 'Coaxial';
-      param1 = await UserInputData.getA();
-      param2 = await UserInputData.getB();
+      param1 = (await UserInputData.getA())! * 1000;
+      param2 = (await UserInputData.getB())! * 1000;
     } else if (geometryCode == 2) {
       geometry = '2-Wire';
-      param1 = await UserInputData.getD();
-      param2 = await UserInputData.getDiameter();
+      param1 = (await UserInputData.getD())! * 1000;
+      param2 = (await UserInputData.getDiameter())! * 1000;
     } else if (geometryCode == 3) {
       geometry = 'Parallel Plate';
-      param1 = await UserInputData.getW();
-      param2 = await UserInputData.getH();
+      param1 = (await UserInputData.getW())! * 1000;
+      param2 = (await UserInputData.getH())! * 1000;
     }
 
     rS = await UserInputData.getRS();
@@ -129,15 +129,15 @@ class _ResultsPageState extends State<ResultsPage> {
                           ),
                           // Data Rows
                           _buildTableRow(
-                              'Rs', rS?.toStringAsExponential(2), '\u03A9/m'),
+                              'Rs', rS?.toStringAsExponential(3), '\u03A9/m'),
                           _buildTableRow(
-                              "R'", r?.toStringAsExponential(2), '\u03A9/m'),
+                              "R'", r?.toStringAsExponential(3), '\u03A9/m'),
                           _buildTableRow(
-                              "L'", l?.toStringAsExponential(2), 'H/m'),
+                              "L'", l?.toStringAsExponential(3), 'H/m'),
                           _buildTableRow(
-                              "G'", g?.toStringAsExponential(2), 'S/m'),
+                              "G'", g?.toStringAsExponential(3), 'S/m'),
                           _buildTableRow(
-                              "C'", c?.toStringAsExponential(2), 'F/m'),
+                              "C'", c?.toStringAsExponential(3), 'F/m'),
                         ],
                       ),
 
@@ -185,7 +185,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                 side: BorderSide(
                                     color: AppColours.secondary, width: 1.5),
                               ),
-                              color: AppColours.ivory,
+                              color: Colors.white,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 18, vertical: 12),
@@ -216,11 +216,12 @@ class _ResultsPageState extends State<ResultsPage> {
                                         f!.toStringAsExponential(2), "Hz"),
                                     // geometry
                                     _sectionTitle("Geometry"),
-                                    _buildStyledDataRow("Shape", geometry, ""),
-                                    _buildStyledDataRow("Parameter 1",
-                                        param1!.toStringAsExponential(2), "m"),
-                                    _buildStyledDataRow("Parameter 2",
-                                        param2!.toStringAsExponential(2), "m"),
+                                    _buildStyledDataRow(
+                                        "Shape", "$geometry Line", ""),
+                                    _buildStyledDataRow(
+                                        "Parameter 1", param1!.round(), "mm"),
+                                    _buildStyledDataRow(
+                                        "Parameter 2", param2!.round(), "mm"),
                                   ],
                                 ),
                               ),
