@@ -210,6 +210,12 @@ class AppWidgets extends StatelessWidget {
               Calculations.evalParallelPlate(3, param1, param2);
               // load parallel plate results
             }
+
+            await Calculations.calcPropConstants();
+            await Calculations.calcZ0Complex();
+            await Calculations.calcPhaseV();
+            await Calculations.calcWavelength();
+
             Navigator.pushNamed(context, '/results');
           },
           style: ElevatedButton.styleFrom(
@@ -437,7 +443,7 @@ class AppWidgets extends StatelessWidget {
         ],
       ),
 
-      const SizedBox(height: 30),
+      const SizedBox(height: 15),
 
       // title: choose your materials:
       Text(heading,

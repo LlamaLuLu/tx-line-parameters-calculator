@@ -54,12 +54,14 @@ class UserInputData {
   static const String betaKey = 'phaseConst';
 
   // characteristic impedance
-  static const String z0Key = 'charImpedance';
+  static const String z0ReKey = 'z0Re';
+  static const String z0ImKey = 'z0Im';
 
   // phase velocity
   static const String muPKey = 'phaseV';
 
   // wavelength
+  static const String lambdaKey = 'wavelength';
 
   /*
     FUNCTIONS:
@@ -91,6 +93,46 @@ class UserInputData {
   static Future<double?> getBeta() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getDouble(betaKey);
+  }
+
+  // z0
+  static Future<void> saveZ0(Complex z0) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(z0ReKey, z0.real);
+    await prefs.setDouble(z0ImKey, z0.imaginary);
+  }
+
+  static Future<Complex?> getZ0() async {
+    final prefs = await SharedPreferences.getInstance();
+    double? real = prefs.getDouble(z0ReKey);
+    double? imag = prefs.getDouble(z0ImKey);
+
+    if (real != null && imag != null) {
+      return Complex(real, imag);
+    }
+    return null;
+  }
+
+  // phase velocity
+  static Future<void> saveMuP(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(muPKey, value);
+  }
+
+  static Future<double?> getMuP() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(muPKey);
+  }
+
+  // wavelength
+  static Future<void> saveLambda(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(lambdaKey, value);
+  }
+
+  static Future<double?> getLambda() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(lambdaKey);
   }
 
   // geometry

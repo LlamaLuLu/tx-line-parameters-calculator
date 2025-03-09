@@ -30,8 +30,6 @@ class Calculations {
     double c = calcCCoaxial(epsilon, a, b);
 
     await UserInputData.saveCoaxialResults(rS, r, l, g, c);
-
-    await calcPropConstants();
   }
 
 // evaluate 2-wire params
@@ -53,8 +51,6 @@ class Calculations {
     double c = calcC2Wire(epsilon, D, d);
 
     await UserInputData.save2WireResults(rS, r, l, g, c);
-
-    await calcPropConstants();
   }
 
 // evaluate parallel plate params
@@ -77,8 +73,6 @@ class Calculations {
     double c = calcCParallel(epsilon, w, h);
 
     await UserInputData.saveParallelPlateResults(rS, r, l, g, c);
-
-    await calcPropConstants();
   }
 
 // calc gamma, alpha, beta
@@ -89,13 +83,50 @@ class Calculations {
     double? c = await UserInputData.getC();
     double? f = await UserInputData.getF();
 
-    debugPrint('r: $r, l: $l, g: $g, c: $c, f: $f');
+    //debugPrint('r: $r, l: $l, g: $g, c: $c, f: $f');
 
     Complex gamma = calcGamma(r!, l!, g!, c!, f!);
     double alpha = calcAlpha(gamma);
     double beta = calcBeta(gamma);
 
     await UserInputData.savePropConstants(alpha, beta);
+  }
+
+// calc z0
+  static Future<void> calcZ0Complex() async {
+    double? r = await UserInputData.getR();
+    double? l = await UserInputData.getL();
+    double? g = await UserInputData.getG();
+    double? c = await UserInputData.getC();
+    double? f = await UserInputData.getF();
+
+    //debugPrint('r: $r, l: $l, g: $g, c: $c, f: $f');
+
+    Complex z0 = calcZ0(r!, l!, g!, c!, f!);
+
+    await UserInputData.saveZ0(z0);
+  }
+
+// calc phase velocity
+  static Future<void> calcPhaseV() async {
+    double? f = await UserInputData.getF();
+    double? beta = await UserInputData.getBeta();
+
+    double muP = calcMuP(f!, beta!);
+    debugPrint('muP: $muP');
+
+    await UserInputData.saveMuP(muP);
+  }
+
+// calc wavelength
+  static Future<void> calcWavelength() async {
+    double? f = await UserInputData.getF();
+    double? muP = await UserInputData.getMuP();
+
+    double lambda = calcLambda(f!, muP!);
+    debugPrint('lambda: $lambda');
+
+    await UserInputData.saveLambda(lambda);
   }
 
 /*
@@ -125,10 +156,29 @@ class Calculations {
   }
 
 // calculate characteristic impedance (z0)
+  static Complex calcZ0(double r, double l, double g, double c, double f) {
+    double omega = 2 * pi * f;
+    Complex term1 = Complex(r, omega * l); // R' + jωL'
+    Complex term2 = Complex(g, omega * c); // G' + jωC'
+    Complex z0 = (term1 / term2).sqrt();
+
+    debugPrint('z0Re: ${z0.real}, term2: ${z0.imaginary}');
+
+    return z0;
+  }
 
 // calculate phase velocity (v)
+  static double calcMuP(double f, double beta) {
+    double omega = 2 * pi * f;
+    double muP = omega / beta;
+    return muP;
+  }
 
 // calculate wavelength (lambda)
+  static double calcLambda(double f, double muP) {
+    double lambda = muP / f;
+    return lambda;
+  }
 
 // calculate Rs
   static double calcRs(double muC, double sigmaC, double f) {

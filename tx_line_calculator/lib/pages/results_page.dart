@@ -1,3 +1,4 @@
+import 'package:complex/complex.dart';
 import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
@@ -12,8 +13,9 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
-  double? rS, r, l, g, c, alpha, beta, muP, z0;
   double? muC, sigmaC, muR, epsilonR, sigma, f, param1, param2;
+  double? rS, r, l, g, c, alpha, beta, muP, lambda;
+  Complex? z0;
   int? geometryCode;
   String? geometry;
 
@@ -69,6 +71,9 @@ class _ResultsPageState extends State<ResultsPage> {
 
     alpha = await UserInputData.getAlpha();
     beta = await UserInputData.getBeta();
+    z0 = await UserInputData.getZ0();
+    muP = await UserInputData.getMuP();
+    lambda = await UserInputData.getLambda();
 
     setState(() {});
   }
@@ -130,8 +135,8 @@ class _ResultsPageState extends State<ResultsPage> {
                       ],
                     ),
                     // Data Rows
-                    _buildTableRow('Rs', rS?.toStringAsExponential(3) ?? "null",
-                        '\u03A9/m'),
+                    _buildTableRow('R\u209B',
+                        rS?.toStringAsExponential(3) ?? "null", '\u03A9/m'),
                     _buildTableRow("R'", r?.toStringAsExponential(3) ?? "null",
                         '\u03A9/m'),
                     _buildTableRow(
@@ -140,14 +145,18 @@ class _ResultsPageState extends State<ResultsPage> {
                         "G'", g?.toStringAsExponential(3) ?? "null", 'S/m'),
                     _buildTableRow(
                         "C'", c?.toStringAsExponential(3) ?? "null", 'F/m'),
-                    _buildTableRow("Alpha",
+                    _buildTableRow("\u03B1",
                         alpha?.toStringAsExponential(3) ?? "null", 'Np/m'),
+                    _buildTableRow("\u03B2",
+                        beta?.toStringAsExponential(3) ?? "null", 'rad/m'),
+                    _buildTableRow("\u00B5\u209A",
+                        muP?.toStringAsExponential(3) ?? "null", 'm/s'),
+                    _buildTableRow("\u03BB",
+                        lambda?.toStringAsExponential(3) ?? "null", "m"),
                     _buildTableRow(
-                        "ß", beta?.toStringAsExponential(3) ?? "null", 'rad/m'),
-                    _buildTableRow(
-                        "µP", c?.toStringAsExponential(3) ?? "null", 'm/s'),
-                    _buildTableRow(
-                        "Zo", c?.toStringAsExponential(3) ?? "null", '\u03A9'),
+                        "Z\u2080",
+                        "(${z0?.real.toStringAsExponential(3)}) + j(${z0?.imaginary.toStringAsExponential(3)})",
+                        '\u03A9'),
                   ],
                 ),
 
@@ -222,10 +231,10 @@ class _ResultsPageState extends State<ResultsPage> {
                               _sectionTitle("Geometry"),
                               _buildStyledDataRow(
                                   "Shape", "$geometry Line", ""),
-                              _buildStyledDataRow(
-                                  "Parameter 1", param1!.round(), "mm"),
-                              _buildStyledDataRow(
-                                  "Parameter 2", param2!.round(), "mm"),
+                              _buildStyledDataRow("Parameter 1",
+                                  param1!.toStringAsFixed(1), "mm"),
+                              _buildStyledDataRow("Parameter 2",
+                                  param2!.toStringAsFixed(1), "mm"),
                             ],
                           ),
                         ),
@@ -238,7 +247,7 @@ class _ResultsPageState extends State<ResultsPage> {
 
                 // Regenerate button at the bottom
                 Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 20),
+                  padding: const EdgeInsets.only(top: 10, bottom: 25),
                   child: AppWidgets.regenBtn(context),
                 ),
               ],
@@ -257,7 +266,7 @@ class _ResultsPageState extends State<ResultsPage> {
           child: Text(param,
               style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
                   color: AppColours.backgroundOpp)),
         ),
         Padding(
