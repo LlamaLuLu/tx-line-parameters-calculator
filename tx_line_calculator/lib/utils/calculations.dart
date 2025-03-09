@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:complex/complex.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tx_line_calculator/utils/constants.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
@@ -29,6 +30,8 @@ class Calculations {
     double c = calcCCoaxial(epsilon, a, b);
 
     await UserInputData.saveCoaxialResults(rS, r, l, g, c);
+
+    await calcPropConstants();
   }
 
 // evaluate 2-wire params
@@ -50,6 +53,8 @@ class Calculations {
     double c = calcC2Wire(epsilon, D, d);
 
     await UserInputData.save2WireResults(rS, r, l, g, c);
+
+    await calcPropConstants();
   }
 
 // evaluate parallel plate params
@@ -72,34 +77,41 @@ class Calculations {
     double c = calcCParallel(epsilon, w, h);
 
     await UserInputData.saveParallelPlateResults(rS, r, l, g, c);
-  }
 
-/*
-  RELEVANT FORMULAE:
-*/
+    await calcPropConstants();
+  }
 
 // calc gamma, alpha, beta
   static Future<void> calcPropConstants() async {
-    // get r,l,g,c,f from user input
     double? r = await UserInputData.getR();
     double? l = await UserInputData.getL();
     double? g = await UserInputData.getG();
     double? c = await UserInputData.getC();
     double? f = await UserInputData.getF();
 
+    debugPrint('r: $r, l: $l, g: $g, c: $c, f: $f');
+
     Complex gamma = calcGamma(r!, l!, g!, c!, f!);
     double alpha = calcAlpha(gamma);
     double beta = calcBeta(gamma);
 
-    // save prop constants
+    await UserInputData.savePropConstants(alpha, beta);
   }
+
+/*
+  RELEVANT FORMULAE:
+*/
 
 // calculate complex propagation constant (gamma)
   static Complex calcGamma(double r, double l, double g, double c, double f) {
     double omega = 2 * pi * f;
     Complex term1 = Complex(r, omega * l); // R' + jωL'
     Complex term2 = Complex(g, omega * c); // G' + jωC'
-    return (term1 * term2).sqrt();
+    Complex gamma = (term1 * term2).sqrt();
+
+    debugPrint('term1: $term1, term2: $term2, gamma: $gamma');
+
+    return gamma;
   }
 
 // calculate attenuation constant (alpha)

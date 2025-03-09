@@ -33,8 +33,9 @@ class AppWidgets extends StatelessWidget {
                 double.tryParse(sigmaCController.text.trim()) ?? 0.0;
             sigmaC *= pow(10, 7);
 
-            await UserInputData.saveConductorData(muC, sigmaC);
+            debugPrint("muC: $muC, sigmaC: $sigmaC");
 
+            await UserInputData.saveConductorData(muC, sigmaC);
             Navigator.pushNamed(
                 context, route); // Replace with your actual route
           },
@@ -136,6 +137,8 @@ class AppWidgets extends StatelessWidget {
             double f = double.tryParse(fController.text.trim()) ?? 0.0;
             f *= pow(10, 9);
 
+            debugPrint("frequency: $f");
+
             await UserInputData.saveF(f);
             Navigator.pushNamed(context, route);
           },
@@ -187,6 +190,8 @@ class AppWidgets extends StatelessWidget {
                 double.tryParse(param2Controller.text.trim()) ?? 0.0;
             param2 *= pow(10, -3);
 
+            debugPrint("param1: $param1, param2: $param2");
+
             await UserInputData.saveSelectedGeometry(geometry);
             // depends on geometry:
             if (geometry == 1) {
@@ -231,31 +236,26 @@ class AppWidgets extends StatelessWidget {
   static Widget regenBtn(BuildContext context) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 50),
-        child: ElevatedButton(
-          onPressed: () {
-            // do relevant calculations
-            // save results
-
-            Navigator.pushNamed(context, '/conductors');
-          },
-          child: Text('Regenerate'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColours.primary, // Background color
-            padding: const EdgeInsets.symmetric(
-                horizontal: 30, vertical: 16), // Padding
-            foregroundColor: AppColours
-                .background, // Text color (use foregroundColor for text color)
-            textStyle: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w500,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
-            ),
-            elevation: 4,
+      child: ElevatedButton(
+        onPressed: () {
+          // save data to history page
+          Navigator.pushNamed(context, '/conductors');
+        },
+        child: Text('Regenerate'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColours.primary, // Background color
+          padding: const EdgeInsets.symmetric(
+              horizontal: 30, vertical: 16), // Padding
+          foregroundColor: AppColours
+              .background, // Text color (use foregroundColor for text color)
+          textStyle: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w500,
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+          ),
+          elevation: 4,
         ),
       ),
     );

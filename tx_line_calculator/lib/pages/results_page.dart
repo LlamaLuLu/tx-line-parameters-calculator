@@ -12,7 +12,7 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
-  double? rS, r, l, g, c;
+  double? rS, r, l, g, c, alpha, beta, muP, z0;
   double? muC, sigmaC, muR, epsilonR, sigma, f, param1, param2;
   int? geometryCode;
   String? geometry;
@@ -24,7 +24,7 @@ class _ResultsPageState extends State<ResultsPage> {
   }
 
   Future<void> loadResults() async {
-    // Fetch results from UserInputData
+    // fetch user inputs
     muC = await UserInputData.getMuC();
     sigmaC = await UserInputData.getSigmaC();
     muR = await UserInputData.getMuR();
@@ -32,6 +32,7 @@ class _ResultsPageState extends State<ResultsPage> {
     sigma = await UserInputData.getSigma();
     f = await UserInputData.getF();
 
+    // identify geometry
     geometryCode = await UserInputData.getSelectedGeometry();
     if (geometryCode == 1) {
       geometry = 'Coaxial';
@@ -47,6 +48,7 @@ class _ResultsPageState extends State<ResultsPage> {
       param2 = (await UserInputData.getH())! * 1000;
     }
 
+    // fetch calculated results
     rS = await UserInputData.getRS();
     if (geometryCode == 1) {
       r = await UserInputData.getRCoaxial();
@@ -64,6 +66,10 @@ class _ResultsPageState extends State<ResultsPage> {
       g = await UserInputData.getGParallel();
       c = await UserInputData.getCParallel();
     }
+
+    alpha = await UserInputData.getAlpha();
+    beta = await UserInputData.getBeta();
+
     setState(() {});
   }
 
@@ -71,175 +77,173 @@ class _ResultsPageState extends State<ResultsPage> {
     return Scaffold(
       backgroundColor: AppColours.background,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                // Make the entire body scrollable
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      // title
-                      AppWidgets.withHistoryTitle(context, 'Results'),
+        child: SingleChildScrollView(
+          // Make the entire body scrollable
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                // title
+                AppWidgets.withHistoryTitle(context, 'Results'),
 
-                      // table of calculated parameters
-                      Table(
-                        border: TableBorder.all(
-                            color: AppColours.darkAccent, width: 1),
-                        columnWidths: {
-                          0: FixedColumnWidth(110),
-                          1: FixedColumnWidth(135),
-                          2: FixedColumnWidth(65),
-                        },
-                        children: [
-                          // Table Header
-                          TableRow(
-                            decoration:
-                                BoxDecoration(color: AppColours.primary),
+                // table of calculated parameters
+                Table(
+                  border:
+                      TableBorder.all(color: AppColours.darkAccent, width: 1),
+                  columnWidths: {
+                    0: FixedColumnWidth(110),
+                    1: FixedColumnWidth(135),
+                    2: FixedColumnWidth(65),
+                  },
+                  children: [
+                    // Table Header
+                    TableRow(
+                      decoration: BoxDecoration(color: AppColours.primary),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Text('Parameter',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColours.ivory)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Text('Value',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColours.ivory)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Text('Unit',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColours.ivory)),
+                        ),
+                      ],
+                    ),
+                    // Data Rows
+                    _buildTableRow('Rs', rS?.toStringAsExponential(3) ?? "null",
+                        '\u03A9/m'),
+                    _buildTableRow("R'", r?.toStringAsExponential(3) ?? "null",
+                        '\u03A9/m'),
+                    _buildTableRow(
+                        "L'", l?.toStringAsExponential(3) ?? "null", 'H/m'),
+                    _buildTableRow(
+                        "G'", g?.toStringAsExponential(3) ?? "null", 'S/m'),
+                    _buildTableRow(
+                        "C'", c?.toStringAsExponential(3) ?? "null", 'F/m'),
+                    _buildTableRow("Alpha",
+                        alpha?.toStringAsExponential(3) ?? "null", 'Np/m'),
+                    _buildTableRow(
+                        "ß", beta?.toStringAsExponential(3) ?? "null", 'rad/m'),
+                    _buildTableRow(
+                        "µP", c?.toStringAsExponential(3) ?? "null", 'm/s'),
+                    _buildTableRow(
+                        "Zo", c?.toStringAsExponential(3) ?? "null", '\u03A9'),
+                  ],
+                ),
+
+                // chosen geometry
+                SwipeImageWidget(
+                  imagePaths: [
+                    if (geometryCode == 1) "assets/coaxial_diag.PNG",
+                    if (geometryCode == 2) "assets/2_wire_diag.PNG",
+                    if (geometryCode == 3) "assets/parallel_plate_diag.PNG",
+                    "assets/equiv_cct.PNG",
+                  ],
+                ),
+
+                AppWidgets.dividerTop(),
+
+                // toggle heading: "Your Inputs:"
+                Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    title: Text(
+                      'Your Inputs:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColours.darkAccent,
+                      ),
+                    ),
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 20),
+                    childrenPadding:
+                        const EdgeInsets.only(bottom: 30, left: 15, right: 15),
+                    expandedAlignment: Alignment.topLeft,
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    onExpansionChanged: (bool expanded) {},
+                    controlAffinity: ListTileControlAffinity.leading,
+                    children: [
+                      Card(
+                        margin:
+                            const EdgeInsets.only(left: 12, right: 12, top: 5),
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          side: BorderSide(
+                              color: AppColours.secondary, width: 1.5),
+                        ),
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(6),
-                                child: Text('Parameter',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColours.ivory)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(6),
-                                child: Text('Value',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColours.ivory)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(6),
-                                child: Text('Unit',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColours.ivory)),
-                              ),
+                              // conductor
+                              _sectionTitle("Conductor Properties"),
+                              _buildStyledDataRow(
+                                  "μC", muC!.toStringAsExponential(2), "H/m"),
+                              _buildStyledDataRow("σC",
+                                  sigmaC!.toStringAsExponential(2), "S/m"),
+                              // insulator
+                              _sectionTitle("Insulator Properties"),
+                              _buildStyledDataRow(
+                                  "μR", muR!.toStringAsExponential(2), "H/m"),
+                              _buildStyledDataRow("εR",
+                                  epsilonR!.toStringAsExponential(2), "F/m"),
+                              _buildStyledDataRow(
+                                  "σ", sigma!.toStringAsExponential(2), "S/m"),
+                              // frequency
+                              _sectionTitle("Operating Frequency"),
+                              _buildStyledDataRow("Frequency",
+                                  f!.toStringAsExponential(2), "Hz"),
+                              // geometry
+                              _sectionTitle("Geometry"),
+                              _buildStyledDataRow(
+                                  "Shape", "$geometry Line", ""),
+                              _buildStyledDataRow(
+                                  "Parameter 1", param1!.round(), "mm"),
+                              _buildStyledDataRow(
+                                  "Parameter 2", param2!.round(), "mm"),
                             ],
                           ),
-                          // Data Rows
-                          _buildTableRow(
-                              'Rs', rS?.toStringAsExponential(3), '\u03A9/m'),
-                          _buildTableRow(
-                              "R'", r?.toStringAsExponential(3), '\u03A9/m'),
-                          _buildTableRow(
-                              "L'", l?.toStringAsExponential(3), 'H/m'),
-                          _buildTableRow(
-                              "G'", g?.toStringAsExponential(3), 'S/m'),
-                          _buildTableRow(
-                              "C'", c?.toStringAsExponential(3), 'F/m'),
-                        ],
-                      ),
-
-                      // chosen geometry
-                      SwipeImageWidget(
-                        imagePaths: [
-                          if (geometryCode == 1) "assets/coaxial_diag.PNG",
-                          if (geometryCode == 2) "assets/2_wire_diag.PNG",
-                          if (geometryCode == 3)
-                            "assets/parallel_plate_diag.PNG",
-                          "assets/equiv_cct.PNG",
-                        ],
-                      ),
-
-                      AppWidgets.dividerTop(),
-
-                      // toggle heading: "Your Inputs:"
-                      Theme(
-                        data: Theme.of(context)
-                            .copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          title: Text(
-                            'Your Inputs:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: AppColours.darkAccent,
-                            ),
-                          ),
-                          tilePadding:
-                              const EdgeInsets.symmetric(horizontal: 20),
-                          childrenPadding: const EdgeInsets.only(
-                              bottom: 30, left: 15, right: 15),
-                          expandedAlignment: Alignment.topLeft,
-                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                          onExpansionChanged: (bool expanded) {},
-                          controlAffinity: ListTileControlAffinity.leading,
-                          children: [
-                            Card(
-                              margin: const EdgeInsets.only(
-                                  left: 12, right: 12, top: 5, bottom: 85),
-                              elevation: 3,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                                side: BorderSide(
-                                    color: AppColours.secondary, width: 1.5),
-                              ),
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 18, vertical: 12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // conductor
-                                    _sectionTitle("Conductor Properties"),
-                                    _buildStyledDataRow("μC",
-                                        muC!.toStringAsExponential(2), "H/m"),
-                                    _buildStyledDataRow(
-                                        "σC",
-                                        sigmaC!.toStringAsExponential(2),
-                                        "S/m"),
-                                    // insulator
-                                    _sectionTitle("Insulator Properties"),
-                                    _buildStyledDataRow("μR",
-                                        muR!.toStringAsExponential(2), "H/m"),
-                                    _buildStyledDataRow(
-                                        "εR",
-                                        epsilonR!.toStringAsExponential(2),
-                                        "F/m"),
-                                    _buildStyledDataRow("σ",
-                                        sigma!.toStringAsExponential(2), "S/m"),
-                                    // frequency
-                                    _sectionTitle("Operating Frequency"),
-                                    _buildStyledDataRow("Frequency",
-                                        f!.toStringAsExponential(2), "Hz"),
-                                    // geometry
-                                    _sectionTitle("Geometry"),
-                                    _buildStyledDataRow(
-                                        "Shape", "$geometry Line", ""),
-                                    _buildStyledDataRow(
-                                        "Parameter 1", param1!.round(), "mm"),
-                                    _buildStyledDataRow(
-                                        "Parameter 2", param2!.round(), "mm"),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
                       ),
-
-                      AppWidgets.dividerBottom()
                     ],
                   ),
                 ),
-              ),
-            ),
 
-            // Regenerate button at the bottom
-            AppWidgets.regenBtn(context),
-          ],
+                AppWidgets.dividerBottom(),
+
+                // Regenerate button at the bottom
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 20),
+                  child: AppWidgets.regenBtn(context),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

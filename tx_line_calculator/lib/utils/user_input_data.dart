@@ -50,13 +50,14 @@ class UserInputData {
   static const String cParallelKey = 'cParallel';
 
   // complex propagation constant
-  static const String gammaKey = 'propConst';
   static const String alphaKey = 'attenConst';
   static const String betaKey = 'phaseConst';
 
   // characteristic impedance
+  static const String z0Key = 'charImpedance';
 
   // phase velocity
+  static const String muPKey = 'phaseV';
 
   // wavelength
 
@@ -64,16 +65,33 @@ class UserInputData {
     FUNCTIONS:
   */
 
-  // complex propagation constant
-  static Future<void> saveGamma(Complex gamma) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(alphaKey, gamma.real);
-    await prefs.setDouble(betaKey, gamma.imaginary);
+  // save complex propagation constants
+  static Future<void> savePropConstants(double alpha, double beta) async {
+    await saveAlpha(alpha);
+    await saveBeta(beta);
   }
 
   // attenuation constant
+  static Future<void> saveAlpha(double alpha) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(alphaKey, alpha);
+  }
+
+  static Future<double?> getAlpha() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(alphaKey);
+  }
 
   // phase constant
+  static Future<void> saveBeta(double beta) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(betaKey, beta);
+  }
+
+  static Future<double?> getBeta() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(betaKey);
+  }
 
   // geometry
   static Future<void> saveSelectedGeometry(int geometry) async {
