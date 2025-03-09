@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/calculations.dart';
+import 'package:tx_line_calculator/utils/constants.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
 class AppWidgets extends StatelessWidget {
@@ -167,6 +168,66 @@ class AppWidgets extends StatelessWidget {
               ), // Arrow icon
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  static Widget materialPresetBtn(BuildContext context, String material,
+      Color txtColor, Color bgColor, String route) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20), // Adjust spacing
+        child: ElevatedButton(
+          onPressed: () async {
+            // conductor presets
+            if (material == "Copper") {
+              await UserInputData.saveConductorData(
+                  Constants.mu0, Constants.sigmaCCu);
+            } else if (material == "Aluminium") {
+              await UserInputData.saveConductorData(
+                  Constants.mu0, Constants.sigmaCAl);
+            } else if (material == "Gold") {
+              await UserInputData.saveConductorData(
+                  Constants.mu0, Constants.sigmaCAu);
+            } else if (material == "Silver") {
+              await UserInputData.saveConductorData(
+                  Constants.mu0, Constants.sigmaCAg);
+            }
+            // insulator presets
+            else if (material == "Polystyrene") {
+              await UserInputData.saveInsulatorData(Constants.mu0,
+                  Constants.epsilonRPolystyrene, Constants.sigmaRPolystyrene);
+            } else if (material == "Air") {
+              await UserInputData.saveInsulatorData(
+                  Constants.mu0, Constants.epsilonRAir, Constants.sigmaRAir);
+            } else if (material == "Teflon") {
+              await UserInputData.saveInsulatorData(Constants.mu0,
+                  Constants.epsilonRTeflon, Constants.sigmaRTeflon);
+            } else if (material == "Polyethylene") {
+              await UserInputData.saveInsulatorData(Constants.mu0,
+                  Constants.epsilonRPolyethylene, Constants.sigmaRPolyethylene);
+            } else if (material == "Plastic") {
+              await UserInputData.saveInsulatorData(Constants.mu0,
+                  Constants.epsilonRPlastic, Constants.sigmaRPlastic);
+            }
+
+            Navigator.pushNamed(context, route);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: bgColor, // Background color
+            foregroundColor: txtColor, // Text color
+            textStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4,
+            padding: const EdgeInsets.symmetric(vertical: 35), // Same height
+          ),
+          child: Text(material),
         ),
       ),
     );
@@ -443,14 +504,14 @@ class AppWidgets extends StatelessWidget {
         ],
       ),
 
-      const SizedBox(height: 15),
+      const SizedBox(height: 5),
 
-      // title: choose your materials:
+      // title
       Text(heading,
           textAlign: TextAlign.center,
           style: const TextStyle(
               fontSize: 22,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.bold,
               color: AppColours.backgroundOpp)),
 
       SizedBox(height: 20),

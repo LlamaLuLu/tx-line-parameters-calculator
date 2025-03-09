@@ -4,30 +4,34 @@ import 'dart:math';
 
 class Constants {
   static double mu0 = 4 * pi * pow(10, -7);
-  static double epsilon0 = 8.854 * pow(10, -12);
+  static double epsilon0 =
+      8.854 * pow(10, -12); // relative permittivity of free space
+  static double c = 3 * pow(10, 8) as double; // speed of light in vacuum
 
-  // conductors: copper, aluminum, silver, gold
+  // CONDUCTORS:
   // copper
   static double sigmaCCu = 5.8 * pow(10, 7);
-  static double muCCu = 1.26 * pow(10, -6);
   // aluminum
   static double sigmaCAl = 3.5 * pow(10, 7);
-  static double muCAl = 1.26 * pow(10, -6);
   // silver
-  static double sigmaCAg = 6.3 * pow(10, 7);
-  static double muCAg = 1.26 * pow(10, -6);
+  static double sigmaCAg = 6.2 * pow(10, 7);
   // gold
   static double sigmaCAu = 4.1 * pow(10, 7);
-  static double muCAu = 1.26 * pow(10, -6);
 
-  // insulators: teflon, air, plastic
-  // teflon
-  static num sigmaRTeflon = pow(10, -20);
-  static double epsilonRTeflon = 2.1;
+  // INSULATORS:
+  // polystyrene
+  static double sigmaRPolystyrene = 0.0;
+  static double epsilonRPolystyrene = 2.6;
   // air
-  static num sigmaRAir = pow(10, -15);
+  static double sigmaRAir = pow(10, -15) as double;
   static double epsilonRAir = 1;
+  // teflon
+  static double sigmaRTeflon = pow(10, -20) as double;
+  static double epsilonRTeflon = 2.1;
+  // polyethylene
+  static double sigmaRPolyethylene = pow(10, -15) as double;
+  static double epsilonRPolyethylene = 2.25;
   // plastic
-  static num sigmaRPlastic = pow(10, -15);
+  static double sigmaRPlastic = pow(10, -15) as double;
   static double epsilonRPlastic = 2.5;
 }

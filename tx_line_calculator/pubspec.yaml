@@ -37,6 +37,7 @@ dependencies:
   path_provider: ^2.1.5
   shared_preferences: ^2.5.2
   complex: ^0.8.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

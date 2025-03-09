@@ -1,5 +1,6 @@
 import 'package:complex/complex.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
 import 'package:tx_line_calculator/utils/swipe_image_widget.dart';
@@ -106,7 +107,7 @@ class _ResultsPageState extends State<ResultsPage> {
                       decoration: BoxDecoration(color: AppColours.primary),
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(5),
                           child: Text('Parameter',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -115,7 +116,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                   color: AppColours.ivory)),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(5),
                           child: Text('Value',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -124,7 +125,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                   color: AppColours.ivory)),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(5),
                           child: Text('Unit',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -135,8 +136,8 @@ class _ResultsPageState extends State<ResultsPage> {
                       ],
                     ),
                     // Data Rows
-                    _buildTableRow('R\u209B',
-                        rS?.toStringAsExponential(3) ?? "null", '\u03A9/m'),
+                    _buildTableRow('Rs', rS?.toStringAsExponential(3) ?? "null",
+                        '\u03A9/m'),
                     _buildTableRow("R'", r?.toStringAsExponential(3) ?? "null",
                         '\u03A9/m'),
                     _buildTableRow(
@@ -149,12 +150,12 @@ class _ResultsPageState extends State<ResultsPage> {
                         alpha?.toStringAsExponential(3) ?? "null", 'Np/m'),
                     _buildTableRow("\u03B2",
                         beta?.toStringAsExponential(3) ?? "null", 'rad/m'),
-                    _buildTableRow("\u00B5\u209A",
+                    _buildTableRow("\u00B5P",
                         muP?.toStringAsExponential(3) ?? "null", 'm/s'),
                     _buildTableRow("\u03BB",
                         lambda?.toStringAsExponential(3) ?? "null", "m"),
                     _buildTableRow(
-                        "Z\u2080",
+                        "Z0",
                         "(${z0?.real.toStringAsExponential(3)}) + j(${z0?.imaginary.toStringAsExponential(3)})",
                         '\u03A9'),
                   ],
@@ -266,7 +267,7 @@ class _ResultsPageState extends State<ResultsPage> {
           child: Text(param,
               style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                   color: AppColours.backgroundOpp)),
         ),
         Padding(

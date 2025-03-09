@@ -34,72 +34,27 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                         // back btn, title, heading
                         AppWidgets.materialsTitle(context, 'Insulator'),
 
-                        // 2 columns: button 1 "air", button 2 "polythylene"
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // Preset 1
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20), // Adjust spacing
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // Add onPressed functionality
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          AppColours.accent, // Background color
-                                      foregroundColor:
-                                          AppColours.accentOpp, // Text color
-                                      textStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            12), // Smooth rounded corners
-                                      ),
-                                      elevation: 4,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 40), // Same height
-                                    ),
-                                    child: const Text('Teflon'),
-                                  ),
-                                ),
+                              // Preset 1: teflon
+                              AppWidgets.materialPresetBtn(
+                                context,
+                                'Polystyrene',
+                                AppColours.accentOpp,
+                                AppColours.accent,
+                                '/frequency',
                               ),
 
-                              // Preset 2
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20), // Adjust spacing
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // Add onPressed functionality
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColours
-                                          .secondary, // Background color
-                                      foregroundColor:
-                                          AppColours.secondaryOpp, // Text color
-                                      textStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            12), // Smooth rounded corners
-                                      ),
-                                      elevation: 4,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 40), // Same height
-                                    ),
-                                    child: const Text('Air'),
-                                  ),
-                                ),
+                              // Preset 2: air
+                              AppWidgets.materialPresetBtn(
+                                context,
+                                'Air',
+                                AppColours.secondaryOpp,
+                                AppColours.secondary,
+                                '/frequency',
                               ),
                             ],
                           ),

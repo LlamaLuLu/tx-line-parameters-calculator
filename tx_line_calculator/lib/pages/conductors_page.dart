@@ -34,73 +34,57 @@ class _ConductorsPageState extends State<ConductorsPage> {
                             // back btn, title, heading
                             AppWidgets.materialsTitle(context, 'Conductor'),
 
-                            // 2 columns: button 1 "copper", button 2 "aluminium"
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // Preset 1
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20), // Adjust spacing
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          // Add onPressed functionality
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColours
-                                              .accent, // Background color
-                                          foregroundColor: AppColours
-                                              .accentOpp, // Text color
-                                          textStyle: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                12), // Smooth rounded corners
-                                          ),
-                                          elevation: 4,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 40), // Same height
-                                        ),
-                                        child: const Text('Copper'),
-                                      ),
-                                    ),
+                                  // Preset 1: copper
+                                  AppWidgets.materialPresetBtn(
+                                    context,
+                                    'Copper',
+                                    AppColours.accentOpp,
+                                    AppColours.accent,
+                                    '/insulators',
                                   ),
 
-                                  // Preset 2
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20), // Adjust spacing
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          // Add onPressed functionality
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColours
-                                              .secondary, // Background color
-                                          foregroundColor: AppColours
-                                              .secondaryOpp, // Text color
-                                          textStyle: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                12), // Smooth rounded corners
-                                          ),
-                                          elevation: 4,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 40), // Same height
-                                        ),
-                                        child: const Text('Aluminium'),
-                                      ),
-                                    ),
+                                  // Preset 2: aluminium
+                                  AppWidgets.materialPresetBtn(
+                                    context,
+                                    'Aluminium',
+                                    AppColours.secondaryOpp,
+                                    AppColours.secondary,
+                                    '/insulators',
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 15),
+
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Preset 3: gold
+                                  AppWidgets.materialPresetBtn(
+                                    context,
+                                    'Gold',
+                                    AppColours.accentOpp,
+                                    const Color.fromARGB(255, 214, 200, 156),
+                                    '/insulators',
+                                  ),
+
+                                  // Preset 4: silver
+                                  AppWidgets.materialPresetBtn(
+                                    context,
+                                    'Silver',
+                                    AppColours.secondaryOpp,
+                                    const Color.fromARGB(255, 188, 218, 222),
+                                    '/insulators',
                                   ),
                                 ],
                               ),
