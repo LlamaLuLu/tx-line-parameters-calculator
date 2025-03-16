@@ -4,8 +4,10 @@ import 'package:complex/complex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInputData {
+  // ============================ VARIABLES ============================
+
   /*
-    VARIABLES:
+    USER INPUTS:
   */
 
   // conductor data
@@ -18,8 +20,8 @@ class UserInputData {
   // frequency
   static const String fKey = 'f';
 
+  // line geometry
   static const String selectedGeometryKey = 'selectedGeometry';
-
   // coaxial data
   static const String aKey = 'a';
   static const String bKey = 'b';
@@ -29,8 +31,23 @@ class UserInputData {
   // parallel plate data
   static const String wKey = 'w';
   static const String hKey = 'h';
+  // microstrip data
+  static const String wMicrostripKey = 'wMicrostrip';
+  static const String hMicrostripKey = 'hMicrostrip';
 
-  // calculated results:
+  // characteristic impedance (lossless)
+  static const String z0LosslessKey = 'z0Lossless';
+  // load impedance
+  static const String zLReKey = 'zLRe';
+  static const String zLImKey = 'zLIm';
+  // wire length
+  static const String lengthKey = 'length';
+
+  /*
+    CALCULATED RESULTS:
+  */
+
+  // Rs
   static const String rSKey = 'rS';
 
   // coaxial
@@ -48,32 +65,144 @@ class UserInputData {
   static const String lParallelKey = 'lParallel';
   static const String gParallelKey = 'gParallel';
   static const String cParallelKey = 'cParallel';
+  // microstrip
+  static const String rMicrostripKey = 'rMicrostrip';
+  static const String lMicrostripKey = 'lMicrostrip';
+  static const String gMicrostripKey = 'gMicrostrip';
+  static const String cMicrostripKey = 'cMicrostrip';
 
   // complex propagation constant
   static const String alphaKey = 'attenConst';
   static const String betaKey = 'phaseConst';
-
   // characteristic impedance
   static const String z0ReKey = 'z0Re';
   static const String z0ImKey = 'z0Im';
-
   // phase velocity
   static const String muPKey = 'phaseV';
-
   // wavelength
   static const String lambdaKey = 'wavelength';
 
+  // reflection coefficient
+  static const String bigGammaReKey = 'reflecCoeffRe';
+  static const String bigGammaImKey = 'reflecCoeffIm';
+  // voltage standing wave ratio
+  static const String SKey = 'sKey';
+  // wave impedance
+  static const String zInReKey = 'zInRe';
+  static const String zInImKey = 'zInIm';
+
+  // ========================== FUNCTIONS ==========================
+
   /*
-    FUNCTIONS:
+    WEEK 3:
   */
 
-  // save complex propagation constants
+  // save bigGamma, S, zIn
+  static Future<void> saveAddedTxParams(
+      Complex bigGamma, double S, Complex zIn) async {
+    await saveBigGamma(bigGamma);
+    await saveS(S);
+    await saveZIn(zIn);
+  }
+
+  // reflection coeff: big gamma
+  static Future<void> saveBigGamma(Complex bigGamma) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(bigGammaReKey, bigGamma.real);
+    await prefs.setDouble(bigGammaImKey, bigGamma.imaginary);
+  }
+
+  static Future<Complex?> getBigGamma() async {
+    final prefs = await SharedPreferences.getInstance();
+    double? real = prefs.getDouble(bigGammaReKey);
+    double? imag = prefs.getDouble(bigGammaImKey);
+
+    if (real != null && imag != null) {
+      return Complex(real, imag);
+    }
+    return null;
+  }
+
+  // voltage standing wave ratio: S
+  static Future<void> saveS(double S) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(SKey, S);
+  }
+
+  static Future<double?> getS() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(SKey);
+  }
+
+  // wave impedance: zIn
+  static Future<void> saveZIn(Complex zIn) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(zInReKey, zIn.real);
+    await prefs.setDouble(zInImKey, zIn.imaginary);
+  }
+
+  static Future<Complex?> getZIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    double? real = prefs.getDouble(zInReKey);
+    double? imag = prefs.getDouble(zInImKey);
+
+    if (real != null && imag != null) {
+      return Complex(real, imag);
+    }
+    return null;
+  }
+
+  // characteristic impedance (lossless): z0
+  static Future<void> saveZ0Lossless(double z0) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(z0LosslessKey, z0);
+  }
+
+  static Future<double?> getZ0Lossless() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(z0LosslessKey);
+  }
+
+  // load impedance: zL
+  static Future<void> saveZL(Complex zL) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(zLReKey, zL.real);
+    await prefs.setDouble(zLImKey, zL.imaginary);
+  }
+
+  static Future<Complex?> getZL() async {
+    final prefs = await SharedPreferences.getInstance();
+    double? real = prefs.getDouble(zLReKey);
+    double? imag = prefs.getDouble(zLImKey);
+
+    if (real != null && imag != null) {
+      return Complex(real, imag);
+    }
+    return null;
+  }
+
+  // wire length: l
+  static Future<void> saveLength(double l) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(lengthKey, l);
+  }
+
+  static Future<double?> getLength() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(lengthKey);
+  }
+
+  /*
+    WEEK 2:
+  */
+
+  // save complex propagation constants: gamma, alpha, beta
   static Future<void> savePropConstants(double alpha, double beta) async {
     await saveAlpha(alpha);
     await saveBeta(beta);
   }
 
-  // attenuation constant
+  // attenuation constant: alpha
   static Future<void> saveAlpha(double alpha) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(alphaKey, alpha);
@@ -84,7 +213,7 @@ class UserInputData {
     return prefs.getDouble(alphaKey);
   }
 
-  // phase constant
+  // phase constant: beta
   static Future<void> saveBeta(double beta) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(betaKey, beta);
@@ -95,7 +224,7 @@ class UserInputData {
     return prefs.getDouble(betaKey);
   }
 
-  // z0
+  // characteristic impedance: z0
   static Future<void> saveZ0(Complex z0) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(z0ReKey, z0.real);
@@ -113,7 +242,7 @@ class UserInputData {
     return null;
   }
 
-  // phase velocity
+  // phase velocity: muP
   static Future<void> saveMuP(double value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(muPKey, value);
@@ -124,7 +253,7 @@ class UserInputData {
     return prefs.getDouble(muPKey);
   }
 
-  // wavelength
+  // wavelength: lambda
   static Future<void> saveLambda(double value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(lambdaKey, value);
@@ -135,7 +264,11 @@ class UserInputData {
     return prefs.getDouble(lambdaKey);
   }
 
-  // geometry
+  /*
+    WEEK 1:
+  */
+
+  // geometry: coaxial, 2-wire, parallel plate, microstrip
   static Future<void> saveSelectedGeometry(int geometry) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(selectedGeometryKey, geometry);
@@ -206,6 +339,21 @@ class UserInputData {
     await saveLParallel(l);
     await saveGParallel(g);
     await saveCParallel(c);
+  }
+
+  // save microstrip data
+  static Future<void> saveMicrostripData(double w, double h) async {
+    await saveWMicrostrip(w);
+    await saveHMicrostrip(h);
+  }
+
+  // save microstrip results
+  static Future<void> saveMicrostripResults(
+      double r, double l, double g, double c) async {
+    await saveRMicrostrip(r);
+    await saveLMicrostrip(l);
+    await saveGMicrostrip(g);
+    await saveCMicrostrip(c);
   }
 
   // muC
@@ -341,6 +489,28 @@ class UserInputData {
   static Future<double?> getH() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getDouble(hKey) ?? 0.0;
+  }
+
+  // w microstrip
+  static Future<void> saveWMicrostrip(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(wMicrostripKey, value);
+  }
+
+  static Future<double?> getWMicrostrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(wMicrostripKey);
+  }
+
+  // h microstrip
+  static Future<void> saveHMicrostrip(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(hMicrostripKey, value);
+  }
+
+  static Future<double?> getHMicrostrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(hMicrostripKey);
   }
 
   // rS,r,l,g,c
@@ -548,5 +718,49 @@ class UserInputData {
   static Future<double?> getCParallel() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getDouble(cParallelKey) ?? 0.0;
+  }
+
+  // rMicrostrip
+  static Future<void> saveRMicrostrip(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(rMicrostripKey, value);
+  }
+
+  static Future<double?> getRMicrostrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(rMicrostripKey) ?? 0.0;
+  }
+
+  // lMicrostrip
+  static Future<void> saveLMicrostrip(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(lMicrostripKey, value);
+  }
+
+  static Future<double?> getLMicrostrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(lMicrostripKey) ?? 0.0;
+  }
+
+  // gMicrostrip
+  static Future<void> saveGMicrostrip(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(gMicrostripKey, value);
+  }
+
+  static Future<double?> getGMicrostrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(gMicrostripKey) ?? 0.0;
+  }
+
+  // cMicrostrip
+  static Future<void> saveCMicrostrip(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(cMicrostripKey, value);
+  }
+
+  static Future<double?> getCMicrostrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(cMicrostripKey) ?? 0.0;
   }
 }

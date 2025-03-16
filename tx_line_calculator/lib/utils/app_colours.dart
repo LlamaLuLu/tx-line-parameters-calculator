@@ -18,5 +18,6 @@ class AppColours {
   static const Color secondaryOpp = Color(0xFF396669); // #396669
   static const Color backgroundOpp = Color(0xFF0F4148); // #0F4148
   static const Color accentOpp = Color(0xFF3E3025); // #3E3025
-  static const Color darkAccentOpp = Color(0xFFBCA9A2); // #BCA9A2
+  static const Color darkAccentOpp =
+      Color.fromARGB(255, 202, 182, 175); // #BCA9A2
 }

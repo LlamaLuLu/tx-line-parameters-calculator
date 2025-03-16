@@ -17,13 +17,13 @@ class GeometryPage extends StatelessWidget {
               // title
               AppWidgets.anyTitle(context, 'Choose your geometry:'),
 
-              // 3 options: 1. coaxial, 2. 2-wire, 3. parallel plate
+              // options: coaxial, 2-wire, parallel plate, microstrip
               AppWidgets.geometryOptBtn(
                 context,
                 '/coaxial',
                 'Coaxial',
-                AppColours.darkAccentOpp,
-                AppColours.darkAccent,
+                AppColours.primary,
+                AppColours.secondary,
               ),
 
               // Button 2: 2-wire
@@ -40,10 +40,19 @@ class GeometryPage extends StatelessWidget {
                 context,
                 '/parallel_plate',
                 'Parallel Plate',
-                AppColours.primary,
-                AppColours.secondary,
+                AppColours.darkAccentOpp,
+                AppColours.darkAccent,
               ),
-              SizedBox(height: 50),
+
+              // Button 4: Microstrip
+              AppWidgets.geometryOptBtn(
+                context,
+                '/microstrip',
+                'Microstrip',
+                AppColours.accentOpp,
+                AppColours.accent,
+              ),
+              SizedBox(height: 40),
             ],
           ),
         ),

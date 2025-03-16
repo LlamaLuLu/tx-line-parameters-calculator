@@ -4,12 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:tx_line_calculator/utils/constants.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
-// MUST STILL CALCULATE GENERAL MU AND SIGMA
-
 class Calculations {
-/*
-  EVALUATE BTN CALCULATIONS
-*/
+// ======================= EVALUATE BTN CALCULATIONS ========================
 
 // evaluate coaxial params
   static Future<void> evalCoaxial(int geometry, double a, double b) async {
@@ -75,6 +71,32 @@ class Calculations {
     await UserInputData.saveParallelPlateResults(rS, r, l, g, c);
   }
 
+// evaluate microstrip params & prop constants
+  static Future<void> evalMicrostrip(
+      int geometry, double wMicro, double hMicro) async {
+    double? f = await UserInputData.getF();
+    double omega = 2 * pi * f!;
+    double? epsilonR = await UserInputData.getEpsilonR();
+
+    double sRatio = calcSRatio(wMicro, hMicro);
+    double epsilonEff =
+        calcEpsilonEff(epsilonR!, sRatio, calcX(epsilonR), calcY(sRatio));
+    double z0Micro = calcZ0Micro(epsilonEff, wMicro, hMicro);
+
+    double r = 0;
+    double g = 0;
+    double c = epsilonEff / (z0Micro * Constants.c);
+    double l = c * pow(z0Micro, 2);
+    double alpha = 0;
+    double beta = (omega / Constants.c) * sqrt(epsilonEff);
+
+    await UserInputData.saveMicrostripResults(r, l, g, c);
+    await UserInputData.savePropConstants(alpha, beta);
+    await UserInputData.saveZ0Lossless(z0Micro);
+  }
+
+// ========================= GROUP CALCULATIONS ==========================
+
 // calc gamma, alpha, beta
   static Future<void> calcPropConstants() async {
     double? r = await UserInputData.getR();
@@ -129,8 +151,126 @@ class Calculations {
     await UserInputData.saveLambda(lambda);
   }
 
+// calc bigGamma, S, zIn
+  static Future<void> calcAddedTxParams() async {
+    Complex? zL = await UserInputData.getZL();
+    double? z0Lossless = await UserInputData.getZ0Lossless();
+    double? beta = await UserInputData.getBeta();
+    double? length = await UserInputData.getLength();
+
+    Complex bigGamma = calcBigGamma(zL!, z0Lossless!);
+    double S = calcS(bigGamma);
+    Complex zIn = calcZIn(zL!, z0Lossless!, beta!, length!);
+
+    await UserInputData.saveAddedTxParams(bigGamma, S, zIn);
+  }
+
+// ======================== RELEVANT FORMULAE ==========================
+
 /*
-  RELEVANT FORMULAE:
+  WEEK 3:
+*/
+
+// calc bigGamma
+  static Complex calcBigGamma(Complex zL, double z0) {
+    Complex term1 = Complex(zL.real - z0, zL.imaginary);
+    Complex term2 = Complex(zL.real + z0, zL.imaginary);
+    Complex bigGamma = term1 / term2;
+
+    debugPrint('term1: $term1, term2: $term2, bigGamma: $bigGamma');
+
+    return bigGamma;
+  }
+
+// calc S (vswr)
+  static double calcS(Complex bigGamma) {
+    double term1 = 1 + bigGamma.abs();
+    double term2 = 1 - bigGamma.abs();
+    double S = term1 / term2;
+
+    debugPrint('term1: $term1, term2: $term2, s: $S');
+
+    return S;
+  }
+
+// calc zIn
+  static Complex calcZIn(
+      Complex zL, double z0Lossless, double beta, double length) {
+    double tanBetaL = tan(beta * length);
+
+    // Complex term1 = Complex((zL.real * cosBetaL),
+    //     (zL.imaginary * cosBetaL) + (z0Lossless * sinBetaL));
+    // Complex term2 = Complex((z0Lossless * cosBetaL) - (zL.imaginary * sinBetaL),
+    //     zL.real * sinBetaL);
+    Complex term1 = Complex(zL.real, zL.imaginary + z0Lossless * tanBetaL);
+    Complex term2 =
+        Complex(z0Lossless - zL.imaginary * tanBetaL, zL.real * tanBetaL);
+    Complex ratio = term1 / term2;
+    Complex zIn =
+        Complex(z0Lossless * ratio.real, z0Lossless * ratio.imaginary);
+
+    debugPrint('term1: $term1, term2: $term2, zin: $zIn');
+
+    return zIn;
+  }
+
+// for microstrip: Z0
+  static double calcZ0Micro(double epsilonEff, double wMicro, double hMicro) {
+    double term1 = 60 / sqrt(epsilonEff);
+    double term2 = log(8 * hMicro / wMicro + wMicro / (4 * hMicro));
+    double z0Micro = term1 / term2;
+
+    debugPrint('term1: $term1, term2: $term2, z0Micro: $z0Micro');
+
+    return z0Micro;
+  }
+
+// for microstrip: s, epsilonEff, x, y, t
+  // width to thickness ratio
+  static double calcSRatio(double wMicro, double hMicro) {
+    return wMicro / hMicro;
+  }
+
+  // effective permittivity: epsilonEff
+  static double calcEpsilonEff(
+      double epsilonR, double sRatio, double x, double y) {
+    double term1 = (epsilonR + 1) / 2;
+    double term2 = (epsilonR - 1) / 2;
+    double term3 = 1 + (10 / sRatio);
+    double epsilonEff = term1 + term2 * pow(term3, -(x * y));
+
+    debugPrint(
+        'term1: $term1, term2: $term2, term3: $term3, epsilonEff: $epsilonEff');
+
+    return epsilonEff;
+  }
+
+  // x
+  static double calcX(double epsilonR) {
+    double term1 = epsilonR - 0.9;
+    double term2 = epsilonR + 3;
+    double x = 0.56 * pow(term1 / term2, 0.05);
+    return x;
+  }
+
+  // y
+  static double calcY(double sRatio) {
+    double term1_1 = pow(sRatio, 4) + pow(3.7, -4) * pow(sRatio, 2) as double;
+    double term1_2 = pow(sRatio, 4) + 0.43;
+    double term1 = log(term1_1 / term1_2);
+    double term2 = log(1 + pow(1.7, -4) * pow(sRatio, 3));
+    double y = 1 + 0.02 * term1 + 0.05 * term2;
+    return y;
+  }
+
+  // t
+  static double calcT(double sRatio) {
+    double t = pow(30.67 / sRatio, 0.75) as double;
+    return t;
+  }
+
+/*
+  WEEK 2:
 */
 
 // calculate complex propagation constant (gamma)
@@ -179,6 +319,10 @@ class Calculations {
     double lambda = muP / f;
     return lambda;
   }
+
+/*
+  WEEK 1:
+*/
 
 // calculate Rs
   static double calcRs(double muC, double sigmaC, double f) {

@@ -7,6 +7,7 @@ import 'package:tx_line_calculator/pages/geometry_page.dart';
 import 'package:tx_line_calculator/pages/history_page.dart';
 import 'package:tx_line_calculator/pages/home_page.dart';
 import 'package:tx_line_calculator/pages/insulators_page.dart';
+import 'package:tx_line_calculator/pages/microstrip_page.dart';
 import 'package:tx_line_calculator/pages/parallel_plate.dart';
 import 'package:tx_line_calculator/pages/results_page.dart';
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/coaxial': (context) => CoaxialPage(),
         '/2_wire': (context) => TwoWirePage(),
         '/parallel_plate': (context) => ParallelPlate(),
+        '/microstrip': (context) => MicrostripPage(),
         '/results': (context) => ResultsPage(),
         '/history': (context) => HistoryPage(),
       },

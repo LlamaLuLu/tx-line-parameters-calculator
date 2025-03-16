@@ -74,7 +74,7 @@ class _ConductorsPageState extends State<ConductorsPage> {
                                     context,
                                     'Gold',
                                     AppColours.accentOpp,
-                                    const Color.fromARGB(255, 214, 200, 156),
+                                    const Color.fromARGB(255, 227, 214, 170),
                                     '/insulators',
                                   ),
 
@@ -83,7 +83,7 @@ class _ConductorsPageState extends State<ConductorsPage> {
                                     context,
                                     'Silver',
                                     AppColours.secondaryOpp,
-                                    const Color.fromARGB(255, 188, 218, 222),
+                                    const Color.fromARGB(255, 205, 225, 228),
                                     '/insulators',
                                   ),
                                 ],

@@ -255,28 +255,37 @@ class AppWidgets extends StatelessWidget {
 
             await UserInputData.saveSelectedGeometry(geometry);
             // depends on geometry:
-            if (geometry == 1) {
-              // coaxial
-              await UserInputData.saveCoaxialData(param1, param2);
-              Calculations.evalCoaxial(1, param1, param2);
-              // load coaxial results
-            } else if (geometry == 2) {
-              // 2-wire
-              await UserInputData.save2WireData(param1, param2);
-              Calculations.eval2Wire(2, param1, param2);
-              // load 2-wire results
-            } else if (geometry == 3) {
-              // parallel plate
-              await UserInputData.saveParallelPlateData(param1, param2);
-              Calculations.evalParallelPlate(3, param1, param2);
-              // load parallel plate results
+            if (geometry == 4) {
+              // lossless
+              // microstrip
+              await UserInputData.saveMicrostripData(param1, param2);
+              Calculations.evalMicrostrip(4, param1, param2);
+              // load microstrip results
+              // prop constants calculated
+            } else {
+              // not lossless
+              if (geometry == 1) {
+                // coaxial
+                await UserInputData.saveCoaxialData(param1, param2);
+                Calculations.evalCoaxial(1, param1, param2);
+                // load coaxial results
+              } else if (geometry == 2) {
+                // 2-wire
+                await UserInputData.save2WireData(param1, param2);
+                Calculations.eval2Wire(2, param1, param2);
+                // load 2-wire results
+              } else if (geometry == 3) {
+                // parallel plate
+                await UserInputData.saveParallelPlateData(param1, param2);
+                Calculations.evalParallelPlate(3, param1, param2);
+                // load parallel plate results
+              }
+
+              await Calculations.calcPropConstants();
+              await Calculations.calcZ0Complex();
+              await Calculations.calcPhaseV();
+              await Calculations.calcWavelength();
             }
-
-            await Calculations.calcPropConstants();
-            await Calculations.calcZ0Complex();
-            await Calculations.calcPhaseV();
-            await Calculations.calcWavelength();
-
             Navigator.pushNamed(context, '/results');
           },
           style: ElevatedButton.styleFrom(
@@ -333,7 +342,7 @@ class AppWidgets extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: 15, horizontal: 40), // Adjust spacing
+            vertical: 10, horizontal: 45), // Adjust spacing
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -350,7 +359,7 @@ class AppWidgets extends StatelessWidget {
               ),
               shape: RoundedRectangleBorder(
                 borderRadius:
-                    BorderRadius.circular(12), // Smooth rounded corners
+                    BorderRadius.circular(20), // Smooth rounded corners
               ),
               elevation: 4,
               padding: const EdgeInsets.symmetric(vertical: 20), // Same height

@@ -15,7 +15,7 @@ class ResultsPage extends StatefulWidget {
 
 class _ResultsPageState extends State<ResultsPage> {
   double? muC, sigmaC, muR, epsilonR, sigma, f, param1, param2;
-  double? rS, r, l, g, c, alpha, beta, muP, lambda;
+  double? rS, r, l, g, c, alpha, beta, muP, lambda, z0Lossless;
   Complex? z0;
   int? geometryCode;
   String? geometry;
@@ -49,6 +49,10 @@ class _ResultsPageState extends State<ResultsPage> {
       geometry = 'Parallel Plate';
       param1 = (await UserInputData.getW())! * 1000;
       param2 = (await UserInputData.getH())! * 1000;
+    } else if (geometryCode == 4) {
+      geometry = 'Microstrip';
+      param1 = (await UserInputData.getWMicrostrip())! * 1000;
+      param2 = (await UserInputData.getHMicrostrip())! * 1000;
     }
 
     // fetch calculated results
@@ -68,11 +72,17 @@ class _ResultsPageState extends State<ResultsPage> {
       l = await UserInputData.getLParallel();
       g = await UserInputData.getGParallel();
       c = await UserInputData.getCParallel();
+    } else if (geometryCode == 4) {
+      r = await UserInputData.getRMicrostrip();
+      l = await UserInputData.getLMicrostrip();
+      g = await UserInputData.getGMicrostrip();
+      c = await UserInputData.getCMicrostrip();
     }
 
     alpha = await UserInputData.getAlpha();
     beta = await UserInputData.getBeta();
     z0 = await UserInputData.getZ0();
+    z0Lossless = await UserInputData.getZ0Lossless();
     muP = await UserInputData.getMuP();
     lambda = await UserInputData.getLambda();
 
@@ -136,8 +146,8 @@ class _ResultsPageState extends State<ResultsPage> {
                       ],
                     ),
                     // Data Rows
-                    _buildTableRow('Rs', rS?.toStringAsExponential(3) ?? "null",
-                        '\u03A9/m'),
+                    // _buildTableRow('Rs', rS?.toStringAsExponential(3) ?? "null",
+                    //     '\u03A9/m'),
                     _buildTableRow("R'", r?.toStringAsExponential(3) ?? "null",
                         '\u03A9/m'),
                     _buildTableRow(
@@ -156,7 +166,9 @@ class _ResultsPageState extends State<ResultsPage> {
                         lambda?.toStringAsExponential(3) ?? "null", "m"),
                     _buildTableRow(
                         "Z0",
-                        "(${z0?.real.toStringAsExponential(3)}) + j(${z0?.imaginary.toStringAsExponential(3)})",
+                        (geometryCode == 4)
+                            ? z0Lossless?.toStringAsExponential(3)
+                            : "(${z0?.real.toStringAsExponential(3)}) + j(${z0?.imaginary.toStringAsExponential(3)})",
                         '\u03A9'),
                   ],
                 ),
@@ -167,6 +179,7 @@ class _ResultsPageState extends State<ResultsPage> {
                     if (geometryCode == 1) "assets/coaxial_diag.PNG",
                     if (geometryCode == 2) "assets/2_wire_diag.PNG",
                     if (geometryCode == 3) "assets/parallel_plate_diag.PNG",
+                    if (geometryCode == 4) "assets/microstrip_diag.PNG",
                     "assets/equiv_cct.PNG",
                   ],
                 ),
