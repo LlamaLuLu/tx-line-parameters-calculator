@@ -32,7 +32,8 @@ class _ConductorsPageState extends State<ConductorsPage> {
                         child: Column(
                           children: [
                             // back btn, title, heading
-                            AppWidgets.materialsTitle(context, 'Conductor'),
+                            AppWidgets.materialsTitle(
+                                context, 'Choose your materials:', 'Conductor'),
 
                             Padding(
                               padding:
@@ -103,13 +104,15 @@ class _ConductorsPageState extends State<ConductorsPage> {
                                 label: 'µ',
                                 controller: muCController,
                                 subscript: 'c',
-                                hintText: 'Enter value (\u00D7E-6)'),
+                                hintText:
+                                    'Enter value (\u00D7E-6)       |    1.26'),
                             InputFields.textField(
                                 hasSubscript: true,
                                 label: 'σ',
                                 controller: sigmaCController,
                                 subscript: 'c',
-                                hintText: 'Enter value (\u00D7E7)'),
+                                hintText:
+                                    'Enter value (\u00D7E7)    |    Infinity'),
                           ],
                         ),
                       ),

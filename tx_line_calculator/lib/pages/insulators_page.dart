@@ -32,7 +32,8 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                     child: Column(
                       children: [
                         // back btn, title, heading
-                        AppWidgets.materialsTitle(context, 'Insulator'),
+                        AppWidgets.materialsTitle(
+                            context, 'Choose your materials:', 'Insulator'),
 
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -73,7 +74,8 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                             label: 'µ',
                             controller: muRController,
                             subscript: 'r',
-                            hintText: 'Enter value (\u00D7E-6)'),
+                            hintText:
+                                'Enter value (\u00D7E-6)       |    1.26'),
                         // epsilonR & text field
                         InputFields.textField(
                             hasSubscript: true,
@@ -82,9 +84,9 @@ class _InsulatorsPageState extends State<InsulatorsPage> {
                             subscript: 'r'),
                         // sigma & text field
                         InputFields.textField(
-                            label: 'σ',
+                            label: 'σ ',
                             controller: sigmaController,
-                            hintText: 'Enter value (\u00D7E-6)'),
+                            hintText: 'Enter value (\u00D7E-6)         |    0'),
                       ],
                     ),
                   ),

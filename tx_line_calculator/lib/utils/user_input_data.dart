@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:complex/complex.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tx_line_calculator/utils/constants.dart';
 
 class UserInputData {
   // ============================ VARIABLES ============================
@@ -70,6 +72,7 @@ class UserInputData {
   static const String lMicrostripKey = 'lMicrostrip';
   static const String gMicrostripKey = 'gMicrostrip';
   static const String cMicrostripKey = 'cMicrostrip';
+  static const String sRatioKey = 'sRatio';
 
   // complex propagation constant
   static const String alphaKey = 'attenConst';
@@ -92,6 +95,37 @@ class UserInputData {
   static const String zInImKey = 'zInIm';
 
   // ========================== FUNCTIONS ==========================
+
+  // clear all user inputs
+  static Future<void> clearAllData() async {
+    await clearMaterialsData();
+    await clearLosslessData();
+
+    debugPrint('All user inputs cleared');
+  }
+
+  // clear user inputs: materials
+  static Future<void> clearMaterialsData() async {
+    await saveConductorData(Constants.mu0, double.infinity);
+    await saveInsulatorData(Constants.mu0, 1.0, 0.0);
+    await saveF(2e9);
+    await saveSelectedGeometry(1);
+    await saveCoaxialData(0.0, 0.0);
+    await save2WireData(0.0, 0.0);
+    await saveParallelPlateData(0.0, 0.0);
+    await saveMicrostripData(0.0, 0.0);
+
+    debugPrint('User inputs cleared for Materials');
+  }
+
+  // clear user inputs: lossless
+  static Future<void> clearLosslessData() async {
+    await saveZ0Lossless(0.0);
+    await saveZL(Complex(0.0, 0.0));
+    await saveLength(0.0);
+
+    debugPrint('User inputs cleared for Lossless Line');
+  }
 
   /*
     WEEK 3:
@@ -293,6 +327,14 @@ class UserInputData {
     await saveSigma(sigma);
   }
 
+  // save lossless line data
+  static Future<void> saveLosslessLineData(
+      double z0Lossless, double zLRe, double zLIm, double l) async {
+    await saveZ0Lossless(z0Lossless);
+    await saveZL(Complex(zLRe, zLIm));
+    await saveLength(l);
+  }
+
   // save coaxial data
   static Future<void> saveCoaxialData(double a, double b) async {
     await saveA(a);
@@ -349,11 +391,12 @@ class UserInputData {
 
   // save microstrip results
   static Future<void> saveMicrostripResults(
-      double r, double l, double g, double c) async {
+      double r, double l, double g, double c, double sRatio) async {
     await saveRMicrostrip(r);
     await saveLMicrostrip(l);
     await saveGMicrostrip(g);
     await saveCMicrostrip(c);
+    await saveSRatio(sRatio);
   }
 
   // muC
@@ -364,8 +407,7 @@ class UserInputData {
 
   static Future<double?> getMuC() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(muCKey) ??
-        (4 * pi * 1e-7); // Permeability of free space
+    return prefs.getDouble(muCKey);
   }
 
   // sigmaC
@@ -376,7 +418,7 @@ class UserInputData {
 
   static Future<double?> getSigmaC() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(sigmaCKey) ?? 4e7; // Conductivity of copper
+    return prefs.getDouble(sigmaCKey);
   }
 
   // muR
@@ -387,7 +429,7 @@ class UserInputData {
 
   static Future<double?> getMuR() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(muRKey) ?? 1.0; // Relative permeability (vacuum)
+    return prefs.getDouble(muRKey);
   }
 
   // epsilonR
@@ -398,8 +440,7 @@ class UserInputData {
 
   static Future<double?> getEpsilonR() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(epsilonRKey) ??
-        1.0; // Relative permittivity (vacuum)
+    return prefs.getDouble(epsilonRKey);
   }
 
   // sigma
@@ -410,8 +451,7 @@ class UserInputData {
 
   static Future<double?> getSigma() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(sigmaKey) ??
-        4e-5; // Conductivity for air or default material
+    return prefs.getDouble(sigmaKey);
   }
 
   // frequency
@@ -422,7 +462,7 @@ class UserInputData {
 
   static Future<double?> getF() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(fKey) ?? 2e9; // Default frequency (2 GHz)
+    return prefs.getDouble(fKey);
   }
 
   // a
@@ -433,7 +473,7 @@ class UserInputData {
 
   static Future<double?> getA() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(aKey) ?? 0.0;
+    return prefs.getDouble(aKey);
   }
 
   // b
@@ -444,7 +484,7 @@ class UserInputData {
 
   static Future<double?> getB() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(bKey) ?? 0.0;
+    return prefs.getDouble(bKey);
   }
 
   // D
@@ -455,7 +495,7 @@ class UserInputData {
 
   static Future<double?> getD() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(DKey) ?? 0.0;
+    return prefs.getDouble(DKey);
   }
 
   // d
@@ -513,6 +553,17 @@ class UserInputData {
     return prefs.getDouble(hMicrostripKey);
   }
 
+  // sRatio
+  static Future<void> saveSRatio(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(sRatioKey, value);
+  }
+
+  static Future<double?> getSRatio() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(sRatioKey);
+  }
+
   // rS,r,l,g,c
   static Future<void> saveRS(double value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -535,6 +586,8 @@ class UserInputData {
         return prefs.getDouble(r2WireKey);
       case 3: // Parallel Plate
         return prefs.getDouble(rParallelKey);
+      case 4: // Microstrip
+        return prefs.getDouble(rMicrostripKey);
       default:
         return null;
     }
@@ -551,6 +604,8 @@ class UserInputData {
         return prefs.getDouble(l2WireKey);
       case 3: // Parallel Plate
         return prefs.getDouble(lParallelKey);
+      case 4: // Microstrip
+        return prefs.getDouble(lMicrostripKey);
       default:
         return null;
     }
@@ -567,6 +622,8 @@ class UserInputData {
         return prefs.getDouble(g2WireKey);
       case 3: // Parallel Plate
         return prefs.getDouble(gParallelKey);
+      case 4: // Microstrip
+        return prefs.getDouble(gMicrostripKey);
       default:
         return null;
     }
@@ -583,6 +640,8 @@ class UserInputData {
         return prefs.getDouble(c2WireKey);
       case 3: // Parallel Plate
         return prefs.getDouble(cParallelKey);
+      case 4: // Microstrip
+        return prefs.getDouble(cMicrostripKey);
       default:
         return null;
     }

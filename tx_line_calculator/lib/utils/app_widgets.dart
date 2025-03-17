@@ -28,10 +28,11 @@ class AppWidgets extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () async {
             // parse values when button is pressed
-            double muC = (double.tryParse(muCController.text.trim())) ?? 0.0;
+            double muC = (double.tryParse(muCController.text.trim())) ??
+                Constants.mu0Default;
             muC *= pow(10, -6);
-            double sigmaC =
-                double.tryParse(sigmaCController.text.trim()) ?? 0.0;
+            double sigmaC = double.tryParse(sigmaCController.text.trim()) ??
+                double.infinity;
             sigmaC *= pow(10, 7);
 
             debugPrint("muC: $muC, sigmaC: $sigmaC");
@@ -83,10 +84,11 @@ class AppWidgets extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () async {
             // parse values when button is pressed
-            double muR = double.tryParse(muRController.text.trim()) ?? 0.0;
+            double muR = double.tryParse(muRController.text.trim()) ??
+                Constants.mu0Default;
             muR *= pow(10, -6);
             double epsilonR =
-                double.tryParse(epsilonRController.text.trim()) ?? 0.0;
+                double.tryParse(epsilonRController.text.trim()) ?? 1.0;
             double sigma = double.tryParse(sigmaController.text.trim()) ?? 0.0;
             sigma *= pow(10, -6);
 
@@ -261,7 +263,7 @@ class AppWidgets extends StatelessWidget {
               await UserInputData.saveMicrostripData(param1, param2);
               Calculations.evalMicrostrip(4, param1, param2);
               // load microstrip results
-              // prop constants calculated
+              // prop constants calculated & z0 lossless saved
             } else {
               // not lossless
               if (geometry == 1) {
@@ -283,9 +285,10 @@ class AppWidgets extends StatelessWidget {
 
               await Calculations.calcPropConstants();
               await Calculations.calcZ0Complex();
-              await Calculations.calcPhaseV();
-              await Calculations.calcWavelength();
             }
+
+            await Calculations.calcPhaseV();
+            await Calculations.calcWavelength();
             Navigator.pushNamed(context, '/results');
           },
           style: ElevatedButton.styleFrom(
@@ -309,30 +312,169 @@ class AppWidgets extends StatelessWidget {
     );
   }
 
-  static Widget regenBtn(BuildContext context) {
+  static Widget evalLosslessBtn(
+      BuildContext context,
+      String route,
+      TextEditingController z0Controller,
+      TextEditingController zlReController,
+      TextEditingController zlImController,
+      TextEditingController lController,
+      TextEditingController fractionalController) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: ElevatedButton(
-        onPressed: () {
-          // save data to history page
-          Navigator.pushNamed(context, '/conductors');
-        },
-        child: Text('Regenerate'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColours.primary, // Background color
-          padding: const EdgeInsets.symmetric(
-              horizontal: 30, vertical: 16), // Padding
-          foregroundColor: AppColours
-              .background, // Text color (use foregroundColor for text color)
-          textStyle: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w500,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 50), // Adjust spacing
+        child: ElevatedButton(
+          onPressed: () async {
+            double? lambda = await UserInputData.getLambda();
+            // parse values when button is pressed
+            double? z0Lossless = await UserInputData.getZ0Lossless();
+            double z0 =
+                double.tryParse(z0Controller.text.trim()) ?? z0Lossless ?? 0.0;
+            double zLRe = double.tryParse(zlReController.text.trim()) ?? 0.0;
+            double zLIm = double.tryParse(zlImController.text.trim()) ?? 0.0;
+            double l;
+            if (lController.text.trim().isEmpty &&
+                fractionalController.text.trim().isEmpty) {
+              l = 0.0;
+            } else if (lController.text.trim().isEmpty) {
+              double fractional =
+                  double.tryParse(fractionalController.text.trim()) ?? 0.0;
+              l = fractional * lambda!;
+            } else {
+              l = double.tryParse(lController.text.trim()) ?? 0.0;
+            }
+
+            debugPrint("z0: $z0, zLRe: $zLRe, zLIm: $zLIm, l: $l");
+
+            await UserInputData.saveLosslessLineData(z0, zLRe, zLIm, l);
+            await Calculations.calcAddedTxParams();
+            Navigator.pushNamed(
+                context, route); // Replace with your actual route
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColours.primary, // Use your theme color
+            foregroundColor: AppColours.background, // White text for contrast
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+            ),
+            elevation: 4, // Slight shadow for depth
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Evaluate'),
+            ],
           ),
-          elevation: 4,
         ),
+      ),
+    );
+  }
+
+  static Widget regenBtn(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        await UserInputData.clearMaterialsData();
+        // save data to history page
+        Navigator.pushNamed(context, '/conductors');
+      },
+      child: Text('Regenerate'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColours.primary, // Background color
+        padding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16), // Padding
+        foregroundColor: AppColours
+            .background, // Text color (use foregroundColor for text color)
+        textStyle: const TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+        ),
+        elevation: 4,
+      ),
+    );
+  }
+
+  static Widget regenLosslessBtn(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        await UserInputData.clearLosslessData();
+        // save data to history page
+        Navigator.pushNamed(context, '/lossless_inputs');
+      },
+      child: Text('Regenerate'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColours.primary, // Background color
+        padding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16), // Padding
+        foregroundColor: AppColours
+            .background, // Text color (use foregroundColor for text color)
+        textStyle: const TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+        ),
+        elevation: 4,
+      ),
+    );
+  }
+
+  static Widget newLineBtn(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        await UserInputData.clearAllData();
+        // save data to history page
+        Navigator.pushNamed(context, '/conductors');
+      },
+      child: Text('New Line'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColours.primary, // Background color
+        padding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16), // Padding
+        foregroundColor: AppColours
+            .background, // Text color (use foregroundColor for text color)
+        textStyle: const TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+        ),
+        elevation: 4,
+      ),
+    );
+  }
+
+  static Widget continueBtn(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        // move to lossless inputs page
+        Navigator.pushNamed(context, '/lossless_inputs');
+      },
+      child: Text('Continue'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColours.primary, // Background color
+        padding:
+            const EdgeInsets.symmetric(horizontal: 30, vertical: 16), // Padding
+        foregroundColor: AppColours
+            .background, // Text color (use foregroundColor for text color)
+        textStyle: const TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Smooth rounded corners
+        ),
+        elevation: 4,
       ),
     );
   }
@@ -445,15 +587,16 @@ class AppWidgets extends StatelessWidget {
 
   // TITLE HEADINGS:
 
-  static Widget materialsTitle(BuildContext context, String heading) {
+  static Widget materialsTitle(
+      BuildContext context, String title, String heading) {
     return Column(children: [
       // back button
       AppWidgets.backBtn(context),
 
-      const SizedBox(height: 30),
+      const SizedBox(height: 25),
 
       // title: choose your materials:
-      Text('Choose your materials:',
+      Text(title,
           textAlign: TextAlign.center,
           style: const TextStyle(
               fontSize: 22,
@@ -462,7 +605,7 @@ class AppWidgets extends StatelessWidget {
 
       SizedBox(height: 30),
 
-      // heading: conductor/insulator/frequency
+      // heading:
       Align(
         alignment: Alignment.centerLeft,
         child: Padding(

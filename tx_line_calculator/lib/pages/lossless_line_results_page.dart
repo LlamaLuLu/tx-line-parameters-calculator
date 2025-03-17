@@ -1,24 +1,24 @@
 import 'package:complex/complex.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
 import 'package:tx_line_calculator/utils/app_widgets.dart';
 import 'package:tx_line_calculator/utils/swipe_image_widget.dart';
 import 'package:tx_line_calculator/utils/user_input_data.dart';
 
-class ResultsPage extends StatefulWidget {
-  const ResultsPage({super.key});
+class LosslessLineResultsPage extends StatefulWidget {
+  const LosslessLineResultsPage({super.key});
 
   @override
-  State<ResultsPage> createState() => _ResultsPageState();
+  State<LosslessLineResultsPage> createState() =>
+      _LosslessLineResultsPageState();
 }
 
-class _ResultsPageState extends State<ResultsPage> {
-  double? muC, sigmaC, muR, epsilonR, sigma, f, param1, param2;
-  double? rS, r, l, g, c, alpha, beta, muP, lambda, z0Lossless, sRatio;
-  Complex? z0;
+class _LosslessLineResultsPageState extends State<LosslessLineResultsPage> {
+  Complex? zL;
+  double? z0Lossless, l;
+  Complex? bigGamma, zIn;
+  double? S, bigGammaMag, bigGammaPhaseRad, bigGammaPhaseDeg;
   int? geometryCode;
-  String? geometry, param1Text, param2Text;
 
   @override
   void initState() {
@@ -27,56 +27,20 @@ class _ResultsPageState extends State<ResultsPage> {
   }
 
   Future<void> loadResults() async {
-    // fetch user inputs
-    muC = await UserInputData.getMuC();
-    sigmaC = await UserInputData.getSigmaC();
-    muR = await UserInputData.getMuR();
-    epsilonR = await UserInputData.getEpsilonR();
-    sigma = await UserInputData.getSigma();
-    f = await UserInputData.getF();
-
-    // identify geometry
+    // fetch geometry code
     geometryCode = await UserInputData.getSelectedGeometry();
-    if (geometryCode == 1) {
-      geometry = 'Coaxial';
-      param1 = (await UserInputData.getA())! * 1000;
-      param1Text = 'a';
-      param2 = (await UserInputData.getB())! * 1000;
-      param2Text = 'b';
-    } else if (geometryCode == 2) {
-      geometry = '2-Wire';
-      param1 = (await UserInputData.getD())! * 1000;
-      param1Text = 'D';
-      param2 = (await UserInputData.getDiameter())! * 1000;
-      param2Text = 'd';
-    } else if (geometryCode == 3) {
-      geometry = 'Parallel Plate';
-      param1 = (await UserInputData.getW())! * 1000;
-      param1Text = 'w';
-      param2 = (await UserInputData.getH())! * 1000;
-      param2Text = 'h';
-    } else if (geometryCode == 4) {
-      geometry = 'Microstrip';
-      param1 = (await UserInputData.getWMicrostrip())! * 1000;
-      param1Text = 'w';
-      param2 = (await UserInputData.getHMicrostrip())! * 1000;
-      param2Text = 'h';
-      sRatio = await UserInputData.getSRatio();
-    }
-
-    // fetch calculated results
-    rS = await UserInputData.getRS();
-    r = await UserInputData.getR();
-    l = await UserInputData.getL();
-    g = await UserInputData.getG();
-    c = await UserInputData.getC();
-
-    alpha = await UserInputData.getAlpha();
-    beta = await UserInputData.getBeta();
-    z0 = await UserInputData.getZ0();
+    // fetch user inputs
+    zL = await UserInputData.getZL();
     z0Lossless = await UserInputData.getZ0Lossless();
-    muP = await UserInputData.getMuP();
-    lambda = await UserInputData.getLambda();
+    l = await UserInputData.getLength();
+
+    // fetch calculated values
+    bigGamma = await UserInputData.getBigGamma();
+    bigGammaMag = bigGamma!.abs();
+    bigGammaPhaseRad = bigGamma!.argument();
+    bigGammaPhaseDeg = bigGammaPhaseRad! * 180 / 3.14159;
+    S = await UserInputData.getS();
+    zIn = await UserInputData.getZIn();
 
     setState(() {});
   }
@@ -100,8 +64,8 @@ class _ResultsPageState extends State<ResultsPage> {
                       TableBorder.all(color: AppColours.darkAccent, width: 1),
                   columnWidths: {
                     0: FixedColumnWidth(110),
-                    1: FixedColumnWidth(135),
-                    2: FixedColumnWidth(65),
+                    1: FixedColumnWidth(140),
+                    2: FixedColumnWidth(60),
                   },
                   children: [
                     // Table Header
@@ -138,32 +102,15 @@ class _ResultsPageState extends State<ResultsPage> {
                       ],
                     ),
                     // Data Rows
-                    if (geometryCode != 4)
-                      _buildTableRow('Rs',
-                          rS?.toStringAsExponential(3) ?? "null", '\u03A9/m'),
-
-                    _buildTableRow("R'", r?.toStringAsExponential(3) ?? "null",
-                        '\u03A9/m'),
                     _buildTableRow(
-                        "L'", l?.toStringAsExponential(3) ?? "null", 'H/m'),
+                        '\u0393',
+                        "${bigGammaMag!.toStringAsExponential(3)} * \ne^(${bigGammaPhaseDeg!.toStringAsExponential(3)})",
+                        '-'),
+                    _buildTableRow("S", S!.toStringAsExponential(3), '-'),
                     _buildTableRow(
-                        "G'", g?.toStringAsExponential(3) ?? "null", 'S/m'),
-                    _buildTableRow(
-                        "C'", c?.toStringAsExponential(3) ?? "null", 'F/m'),
-                    _buildTableRow("\u03B1",
-                        alpha?.toStringAsExponential(3) ?? "null", 'Np/m'),
-                    _buildTableRow("\u03B2",
-                        beta?.toStringAsExponential(3) ?? "null", 'rad/m'),
-                    _buildTableRow("\u00B5P",
-                        muP?.toStringAsExponential(3) ?? "null", 'm/s'),
-                    _buildTableRow("\u03BB",
-                        lambda?.toStringAsExponential(3) ?? "null", "m"),
-                    _buildTableRow(
-                        "Z0",
-                        (geometryCode == 4)
-                            ? z0Lossless?.toStringAsExponential(3)
-                            : "(${z0?.real.toStringAsExponential(3)}) + j(${z0?.imaginary.toStringAsExponential(3)})",
-                        '\u03A9'),
+                        "Zin",
+                        "(${zIn!.real.toStringAsExponential(3)}) + \nj(${zIn!.imaginary.toStringAsExponential(3)})",
+                        'Ω'),
                   ],
                 ),
 
@@ -217,33 +164,16 @@ class _ResultsPageState extends State<ResultsPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // conductor
-                              _sectionTitle("Conductor Properties"),
+                              // Lossless Line
+                              _sectionTitle("Lossless Line Properties"),
+                              _buildStyledDataRow("z0",
+                                  z0Lossless!.toStringAsExponential(2), "H/m"),
                               _buildStyledDataRow(
-                                  "μC", muC!.toStringAsExponential(2), "H/m"),
-                              _buildStyledDataRow("σC",
-                                  sigmaC!.toStringAsExponential(2), "S/m"),
-                              // insulator
-                              _sectionTitle("Insulator Properties"),
+                                  "zL",
+                                  "(${zL!.real.toStringAsExponential(3)}) + \nj(${zL!.imaginary.toStringAsExponential(3)})",
+                                  "S/m"),
                               _buildStyledDataRow(
-                                  "μR", muR!.toStringAsExponential(2), "H/m"),
-                              _buildStyledDataRow("εR",
-                                  epsilonR!.toStringAsExponential(2), "F/m"),
-                              _buildStyledDataRow(
-                                  "σ", sigma!.toStringAsExponential(2), "S/m"),
-                              // frequency
-                              _sectionTitle("Operating Frequency"),
-                              _buildStyledDataRow("Frequency",
-                                  f!.toStringAsExponential(2), "Hz"),
-                              // geometry
-                              _sectionTitle("Geometry"),
-                              _buildStyledDataRow(
-                                  "Shape", "$geometry Line", ""),
-                              _buildStyledDataRow(param1Text!, param1!, "mm"),
-                              _buildStyledDataRow(param2Text!, param2!, "mm"),
-                              if (geometryCode == 4)
-                                _buildStyledDataRow(
-                                    "w / h", sRatio!.toStringAsFixed(6), ""),
+                                  "Length", l!.toStringAsExponential(3), "m"),
                             ],
                           ),
                         ),
@@ -257,16 +187,16 @@ class _ResultsPageState extends State<ResultsPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    // Create new tx line btn
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 25),
+                      child: AppWidgets.newLineBtn(context),
+                    ),
+
                     // Regenerate btn at bottom left
                     Padding(
                       padding: const EdgeInsets.only(top: 10, bottom: 25),
-                      child: AppWidgets.regenBtn(context),
-                    ),
-
-                    // continue btn at bottom right
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 25),
-                      child: AppWidgets.continueBtn(context),
+                      child: AppWidgets.regenLosslessBtn(context),
                     ),
                   ],
                 )

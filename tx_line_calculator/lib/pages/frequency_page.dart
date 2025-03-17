@@ -27,7 +27,8 @@ class _FrequencyPageState extends State<FrequencyPage> {
                 child: Column(
                   children: [
                     // back btn, title, heading
-                    AppWidgets.materialsTitle(context, 'Frequency'),
+                    AppWidgets.materialsTitle(
+                        context, 'Choose your materials:', 'Frequency'),
 
                     // f & text field
                     InputFields.textField(

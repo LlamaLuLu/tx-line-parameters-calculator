@@ -81,7 +81,8 @@ class Calculations {
     double sRatio = calcSRatio(wMicro, hMicro);
     double epsilonEff =
         calcEpsilonEff(epsilonR!, sRatio, calcX(epsilonR), calcY(sRatio));
-    double z0Micro = calcZ0Micro(epsilonEff, wMicro, hMicro);
+    double z0Micro =
+        calcZ0Micro(epsilonEff, calcT(sRatio), sRatio, wMicro, hMicro);
 
     double r = 0;
     double g = 0;
@@ -90,7 +91,9 @@ class Calculations {
     double alpha = 0;
     double beta = (omega / Constants.c) * sqrt(epsilonEff);
 
-    await UserInputData.saveMicrostripResults(r, l, g, c);
+    debugPrint('r: $r, l: $l, g: $g, c: $c, alpha: $alpha, beta: $beta');
+
+    await UserInputData.saveMicrostripResults(r, l, g, c, sRatio);
     await UserInputData.savePropConstants(alpha, beta);
     await UserInputData.saveZ0Lossless(z0Micro);
   }
@@ -215,12 +218,15 @@ class Calculations {
   }
 
 // for microstrip: Z0
-  static double calcZ0Micro(double epsilonEff, double wMicro, double hMicro) {
+  static double calcZ0Micro(double epsilonEff, double t, double sRatio,
+      double wMicro, double hMicro) {
     double term1 = 60 / sqrt(epsilonEff);
-    double term2 = log(8 * hMicro / wMicro + wMicro / (4 * hMicro));
-    double z0Micro = term1 / term2;
+    double term2 = (6 + (2 * pi - 6) * exp(-t)) / sRatio;
+    double term3 = sqrt(1 + (4 / pow(sRatio, 2)));
+    double z0Micro = term1 * log(term2 + term3);
 
-    debugPrint('term1: $term1, term2: $term2, z0Micro: $z0Micro');
+    debugPrint(
+        'z0 microstrip:\nterm1: $term1, term2: $term2, z0Micro: $z0Micro');
 
     return z0Micro;
   }
@@ -228,7 +234,10 @@ class Calculations {
 // for microstrip: s, epsilonEff, x, y, t
   // width to thickness ratio
   static double calcSRatio(double wMicro, double hMicro) {
-    return wMicro / hMicro;
+    double sRatio = wMicro / hMicro;
+    debugPrint('sRatio: $sRatio');
+
+    return sRatio;
   }
 
   // effective permittivity: epsilonEff
@@ -240,7 +249,7 @@ class Calculations {
     double epsilonEff = term1 + term2 * pow(term3, -(x * y));
 
     debugPrint(
-        'term1: $term1, term2: $term2, term3: $term3, epsilonEff: $epsilonEff');
+        'epsilonEff:\nterm1: $term1, term2: $term2, term3: $term3, epsilonEff: $epsilonEff');
 
     return epsilonEff;
   }
@@ -250,6 +259,8 @@ class Calculations {
     double term1 = epsilonR - 0.9;
     double term2 = epsilonR + 3;
     double x = 0.56 * pow(term1 / term2, 0.05);
+    debugPrint('x: $x');
+
     return x;
   }
 
@@ -260,12 +271,16 @@ class Calculations {
     double term1 = log(term1_1 / term1_2);
     double term2 = log(1 + pow(1.7, -4) * pow(sRatio, 3));
     double y = 1 + 0.02 * term1 + 0.05 * term2;
+    debugPrint('y: $y');
+
     return y;
   }
 
   // t
   static double calcT(double sRatio) {
     double t = pow(30.67 / sRatio, 0.75) as double;
+    debugPrint('t: $t');
+
     return t;
   }
 
