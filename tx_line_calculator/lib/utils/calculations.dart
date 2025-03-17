@@ -168,6 +168,18 @@ class Calculations {
     await UserInputData.saveAddedTxParams(bigGamma, S, zIn);
   }
 
+// calc short & open ccts
+  static Future<void> calcShortAndOpen() async {
+    double? z0Lossless = await UserInputData.getZ0Lossless();
+    double? beta = await UserInputData.getBeta();
+    double? length = await UserInputData.getLength();
+
+    Complex zInShort = calcZInShort(z0Lossless!, beta!, length!);
+    Complex zInOpen = calcZInOpen(z0Lossless!, beta!, length!);
+
+    await UserInputData.saveShortAndOpen(zInShort, zInOpen);
+  }
+
 // ======================== RELEVANT FORMULAE ==========================
 
 /*
@@ -215,6 +227,26 @@ class Calculations {
     debugPrint('term1: $term1, term2: $term2, zin: $zIn');
 
     return zIn;
+  }
+
+// calc zIn short
+  static Complex calcZInShort(double z0Lossless, double beta, double length) {
+    double tanBetaL = tan(beta * length);
+    Complex zInShort = Complex(0, z0Lossless * tanBetaL);
+
+    debugPrint('zin short: $zInShort');
+
+    return zInShort;
+  }
+
+// calc zIn open
+  static Complex calcZInOpen(double z0Lossless, double beta, double length) {
+    double tanBetaL = tan(beta * length);
+    Complex zInOpen = Complex(0, -z0Lossless / tanBetaL);
+
+    debugPrint('zin open: $zInOpen');
+
+    return zInOpen;
   }
 
 // for microstrip: Z0

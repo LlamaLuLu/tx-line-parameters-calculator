@@ -58,7 +58,7 @@ class _MicrostripPageState extends State<MicrostripPage> {
                             controller: wController,
                             hintText: 'Enter value in mm'),
                         InputFields.textField(
-                            label: 'h',
+                            label: 'h ',
                             controller: hController,
                             hintText: 'Enter value in mm'),
                       ],

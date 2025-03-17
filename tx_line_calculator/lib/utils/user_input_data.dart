@@ -94,6 +94,13 @@ class UserInputData {
   static const String zInReKey = 'zInRe';
   static const String zInImKey = 'zInIm';
 
+  // short cct impedance
+  static const String zInShortReKey = 'zInShortRe';
+  static const String zInShortImKey = 'zInShortIm';
+  // open cct impedance
+  static const String zInOpenReKey = 'zInOpenRe';
+  static const String zInOpenImKey = 'zInOpenIm';
+
   // ========================== FUNCTIONS ==========================
 
   // clear all user inputs
@@ -125,6 +132,39 @@ class UserInputData {
     await saveLength(0.0);
 
     debugPrint('User inputs cleared for Lossless Line');
+  }
+
+  // save results data
+  static Future<void> saveResultsData(
+      double rS,
+      double r,
+      double l,
+      double g,
+      double c,
+      double alpha,
+      double beta,
+      double muP,
+      double lambda,
+      Complex z0,
+      double z0Lossless) async {
+    int? geometry = await getSelectedGeometry();
+
+    switch (geometry) {
+      case 1: // Coaxial
+        await saveCoaxialResults(rS, r, l, g, c);
+        break;
+      case 2: // 2-Wire
+        await save2WireResults(rS, r, l, g, c);
+        break;
+      case 3: // Parallel Plate
+        await saveParallelPlateResults(rS, r, l, g, c);
+        break;
+      case 4: // Microstrip
+        await saveMicrostripResults(r, l, g, c, 0.0);
+        break;
+      default:
+        break;
+    }
   }
 
   /*
@@ -224,6 +264,49 @@ class UserInputData {
   static Future<double?> getLength() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getDouble(lengthKey);
+  }
+
+  // save short & open cct impedances
+  static Future<void> saveShortAndOpen(
+      Complex zInShort, Complex zInOpen) async {
+    await saveZInShort(zInShort);
+    await saveZInOpen(zInOpen);
+  }
+
+  // zIn short
+  static Future<void> saveZInShort(Complex zInShort) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(zInShortReKey, zInShort.real);
+    await prefs.setDouble(zInShortImKey, zInShort.imaginary);
+  }
+
+  static Future<Complex?> getZInShort() async {
+    final prefs = await SharedPreferences.getInstance();
+    double? real = prefs.getDouble(zInShortReKey);
+    double? imag = prefs.getDouble(zInShortImKey);
+
+    if (real != null && imag != null) {
+      return Complex(real, imag);
+    }
+    return null;
+  }
+
+  // zIn open
+  static Future<void> saveZInOpen(Complex zInOpen) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(zInOpenReKey, zInOpen.real);
+    await prefs.setDouble(zInOpenImKey, zInOpen.imaginary);
+  }
+
+  static Future<Complex?> getZInOpen() async {
+    final prefs = await SharedPreferences.getInstance();
+    double? real = prefs.getDouble(zInOpenReKey);
+    double? imag = prefs.getDouble(zInOpenImKey);
+
+    if (real != null && imag != null) {
+      return Complex(real, imag);
+    }
+    return null;
   }
 
   /*
@@ -328,8 +411,9 @@ class UserInputData {
   }
 
   // save lossless line data
-  static Future<void> saveLosslessLineData(
-      double z0Lossless, double zLRe, double zLIm, double l) async {
+  static Future<void> saveLosslessLineData(double lambda, double z0Lossless,
+      double zLRe, double zLIm, double l) async {
+    await saveLambda(lambda);
     await saveZ0Lossless(z0Lossless);
     await saveZL(Complex(zLRe, zLIm));
     await saveLength(l);

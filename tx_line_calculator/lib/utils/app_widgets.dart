@@ -315,6 +315,7 @@ class AppWidgets extends StatelessWidget {
   static Widget evalLosslessBtn(
       BuildContext context,
       String route,
+      TextEditingController lambdaController,
       TextEditingController z0Controller,
       TextEditingController zlReController,
       TextEditingController zlImController,
@@ -323,11 +324,13 @@ class AppWidgets extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 50), // Adjust spacing
+        padding: const EdgeInsets.only(bottom: 30), // Adjust spacing
         child: ElevatedButton(
           onPressed: () async {
-            double? lambda = await UserInputData.getLambda();
             // parse values when button is pressed
+            double? lambda = await UserInputData.getLambda();
+            double newLambda =
+                double.tryParse(lambdaController.text.trim()) ?? lambda ?? 0.0;
             double? z0Lossless = await UserInputData.getZ0Lossless();
             double z0 =
                 double.tryParse(z0Controller.text.trim()) ?? z0Lossless ?? 0.0;
@@ -347,8 +350,10 @@ class AppWidgets extends StatelessWidget {
 
             debugPrint("z0: $z0, zLRe: $zLRe, zLIm: $zLIm, l: $l");
 
-            await UserInputData.saveLosslessLineData(z0, zLRe, zLIm, l);
+            await UserInputData.saveLosslessLineData(
+                newLambda, z0, zLRe, zLIm, l);
             await Calculations.calcAddedTxParams();
+            await Calculations.calcShortAndOpen();
             Navigator.pushNamed(
                 context, route); // Replace with your actual route
           },
@@ -460,11 +465,11 @@ class AppWidgets extends StatelessWidget {
         // move to lossless inputs page
         Navigator.pushNamed(context, '/lossless_inputs');
       },
-      child: Text('Continue'),
+      child: Text('Lossless Line'),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColours.primary, // Background color
         padding:
-            const EdgeInsets.symmetric(horizontal: 30, vertical: 16), // Padding
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16), // Padding
         foregroundColor: AppColours
             .background, // Text color (use foregroundColor for text color)
         textStyle: const TextStyle(
@@ -638,7 +643,7 @@ class AppWidgets extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: AppColours.backgroundOpp)),
 
-      SizedBox(height: 15),
+      SizedBox(height: 20),
     ]);
   }
 

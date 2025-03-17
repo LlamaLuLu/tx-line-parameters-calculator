@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:complex/complex.dart';
 import 'package:flutter/material.dart';
 import 'package:tx_line_calculator/utils/app_colours.dart';
@@ -16,8 +18,19 @@ class LosslessLineResultsPage extends StatefulWidget {
 class _LosslessLineResultsPageState extends State<LosslessLineResultsPage> {
   Complex? zL;
   double? z0Lossless, l;
-  Complex? bigGamma, zIn;
-  double? S, bigGammaMag, bigGammaPhaseRad, bigGammaPhaseDeg;
+  Complex? bigGamma, zIn, zInShort, zInOpen;
+  double? S,
+      lambda,
+      beta,
+      bigGammaMag,
+      bigGammaPhaseRad,
+      bigGammaPhaseDeg,
+      zInShortMag,
+      zInShortPhaseRad,
+      zInShortPhaseDeg,
+      zInOpenMag,
+      zInOpenPhaseRad,
+      zInOpenPhaseDeg;
   int? geometryCode;
 
   @override
@@ -35,12 +48,26 @@ class _LosslessLineResultsPageState extends State<LosslessLineResultsPage> {
     l = await UserInputData.getLength();
 
     // fetch calculated values
+    S = await UserInputData.getS();
+    zIn = await UserInputData.getZIn();
+    beta = await UserInputData.getBeta();
+    beta = beta! / pi;
+    lambda = await UserInputData.getLambda();
+
     bigGamma = await UserInputData.getBigGamma();
     bigGammaMag = bigGamma!.abs();
     bigGammaPhaseRad = bigGamma!.argument();
     bigGammaPhaseDeg = bigGammaPhaseRad! * 180 / 3.14159;
-    S = await UserInputData.getS();
-    zIn = await UserInputData.getZIn();
+
+    zInShort = await UserInputData.getZInShort();
+    zInShortMag = zInShort!.abs();
+    zInShortPhaseRad = zInShort!.argument();
+    zInShortPhaseDeg = zInShortPhaseRad! * 180 / 3.14159;
+
+    zInOpen = await UserInputData.getZInOpen();
+    zInOpenMag = zInOpen!.abs();
+    zInOpenPhaseRad = zInOpen!.argument();
+    zInOpenPhaseDeg = zInOpenPhaseRad! * 180 / 3.14159;
 
     setState(() {});
   }
@@ -104,14 +131,86 @@ class _LosslessLineResultsPageState extends State<LosslessLineResultsPage> {
                     // Data Rows
                     _buildTableRow(
                         '\u0393',
-                        "${bigGammaMag!.toStringAsExponential(3)} * \ne^(${bigGammaPhaseDeg!.toStringAsExponential(3)})",
+                        "${bigGammaMag!.toStringAsExponential(2)} * \ne^(${bigGammaPhaseDeg!.toStringAsExponential(2)})",
                         '-'),
-                    _buildTableRow("S", S!.toStringAsExponential(3), '-'),
+                    _buildTableRow("S", S!.toStringAsExponential(2), '-'),
                     _buildTableRow(
                         "Zin",
                         "(${zIn!.real.toStringAsExponential(3)}) + \nj(${zIn!.imaginary.toStringAsExponential(3)})",
                         'Ω'),
                   ],
+                ),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 25, top: 15, bottom: 10),
+                    child: Text('Short & Open-Circuited Line',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColours.darkAccent)),
+                  ),
+                ),
+
+                // SHORT & OPEN CCT
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Table(
+                    border:
+                        TableBorder.all(color: AppColours.darkAccent, width: 1),
+                    columnWidths: {
+                      0: FixedColumnWidth(110),
+                      1: FixedColumnWidth(140),
+                      2: FixedColumnWidth(60),
+                    },
+                    children: [
+                      // Table Header
+                      TableRow(
+                        decoration: BoxDecoration(color: AppColours.accent),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Text('Parameter',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColours.ivory)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Text('Value',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColours.ivory)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Text('Unit',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColours.ivory)),
+                          ),
+                        ],
+                      ),
+                      // Data Rows
+                      _buildTableRow(
+                          'Zin (short)',
+                          "${zInShortMag!.toStringAsExponential(3)} * \ne^(${zInShortPhaseDeg!.toStringAsExponential(3)})",
+                          'Ω'),
+                      _buildTableRow(
+                          "Zin (open)",
+                          "${zInOpenMag!.toStringAsExponential(3)} * \ne^(${zInOpenPhaseDeg!.toStringAsExponential(3)})",
+                          'Ω'),
+                    ],
+                  ),
                 ),
 
                 // chosen geometry
@@ -166,14 +265,20 @@ class _LosslessLineResultsPageState extends State<LosslessLineResultsPage> {
                             children: [
                               // Lossless Line
                               _sectionTitle("Lossless Line Properties"),
-                              _buildStyledDataRow("z0",
-                                  z0Lossless!.toStringAsExponential(2), "H/m"),
+                              _buildStyledDataRow("Z0",
+                                  z0Lossless!.toStringAsExponential(2), "Ω"),
                               _buildStyledDataRow(
-                                  "zL",
+                                  "ZL",
                                   "(${zL!.real.toStringAsExponential(3)}) + \nj(${zL!.imaginary.toStringAsExponential(3)})",
-                                  "S/m"),
+                                  "Ω"),
+                              _buildStyledDataRow("Wire Length",
+                                  l!.toStringAsExponential(3), "m"),
+                              _buildStyledDataRow("\u03BB",
+                                  lambda!.toStringAsExponential(3), "m"),
                               _buildStyledDataRow(
-                                  "Length", l!.toStringAsExponential(3), "m"),
+                                  "\u03B2",
+                                  "${beta!.toStringAsExponential(3)} * π",
+                                  "rad/m"),
                             ],
                           ),
                         ),
@@ -199,7 +304,8 @@ class _LosslessLineResultsPageState extends State<LosslessLineResultsPage> {
                       child: AppWidgets.regenLosslessBtn(context),
                     ),
                   ],
-                )
+                ),
+                SizedBox(height: 20),
               ],
             ),
           ),

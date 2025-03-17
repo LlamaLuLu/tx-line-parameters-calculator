@@ -61,7 +61,7 @@ class InputFields extends StatelessWidget {
                     ? 'Enter value'
                     : hintText,
                 hintStyle: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   color: AppColours.darkAccent,
                 ),
                 contentPadding:

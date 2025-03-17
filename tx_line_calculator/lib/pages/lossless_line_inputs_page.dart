@@ -13,6 +13,7 @@ class LosslessLineInputsPage extends StatefulWidget {
 }
 
 class _LosslessLineInputsPageState extends State<LosslessLineInputsPage> {
+  final TextEditingController lambdaController = TextEditingController();
   final TextEditingController z0Controller = TextEditingController();
   final TextEditingController zLReController = TextEditingController();
   final TextEditingController zLImController = TextEditingController();
@@ -40,6 +41,7 @@ class _LosslessLineInputsPageState extends State<LosslessLineInputsPage> {
       z0Mag = z0!.abs();
     }
     lambda = await UserInputData.getLambda();
+    //lambda = lambda! * 1000; // for display in mm
 
     setState(() {});
   }
@@ -56,9 +58,41 @@ class _LosslessLineInputsPageState extends State<LosslessLineInputsPage> {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   children: [
-                    // back btn, title, heading
-                    AppWidgets.materialsTitle(
-                        context, 'Lossless Line', 'Impedances'),
+                    // back button
+                    AppWidgets.backBtn(context),
+
+                    const SizedBox(height: 5),
+
+                    // title
+                    Text('Lossless Line Inputs',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: AppColours.backgroundOpp)),
+
+                    SizedBox(height: 15),
+
+                    InputFields.textField(
+                        label: '\u03BB  ',
+                        controller: lambdaController,
+                        hintText: (lambda != null || lambda != 0)
+                            ? 'Enter value in m      |    ${lambda!.toStringAsFixed(2)}'
+                            : 'Enter value in m'),
+
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 35, top: 12, bottom: 10),
+                        child: Text('Impedances',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: AppColours.darkAccent)),
+                      ),
+                    ),
 
                     // z0
                     InputFields.textField(
@@ -66,8 +100,8 @@ class _LosslessLineInputsPageState extends State<LosslessLineInputsPage> {
                         label: 'Z',
                         subscript: '0',
                         controller: z0Controller,
-                        hintText: (z0Mag != null)
-                            ? 'Enter value         |    ${z0Mag!.toStringAsFixed(2)}'
+                        hintText: (z0Mag != null || z0Mag != 0)
+                            ? 'Enter value               |    ${z0Mag!.toStringAsFixed(2)}'
                             : 'Enter value'),
                     // zL Re
                     InputFields.textField(
@@ -88,7 +122,7 @@ class _LosslessLineInputsPageState extends State<LosslessLineInputsPage> {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(
-                            left: 35, top: 20, bottom: 10),
+                            left: 35, top: 12, bottom: 10),
                         child: Text('Wire length',
                             textAlign: TextAlign.center,
                             style: const TextStyle(
@@ -102,7 +136,7 @@ class _LosslessLineInputsPageState extends State<LosslessLineInputsPage> {
                     InputFields.textField(
                         label: 'L ',
                         controller: lController,
-                        hintText: 'Enter wire length (m)'),
+                        hintText: 'Enter wire length in m'),
                     // or divider
                     AppWidgets.orDivider(),
                     // wavelength
@@ -120,6 +154,7 @@ class _LosslessLineInputsPageState extends State<LosslessLineInputsPage> {
             AppWidgets.evalLosslessBtn(
                 context,
                 '/lossless_results',
+                lambdaController,
                 z0Controller,
                 zLReController,
                 zLImController,

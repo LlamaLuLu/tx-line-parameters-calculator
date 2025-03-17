@@ -58,7 +58,7 @@ class _ParallelPlateState extends State<ParallelPlate> {
                             controller: wController,
                             hintText: 'Enter value in mm'),
                         InputFields.textField(
-                            label: 'h',
+                            label: 'h ',
                             controller: hController,
                             hintText: 'Enter value in mm'),
                       ],
